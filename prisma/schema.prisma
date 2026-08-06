@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+enum StatutPresence {
+  present
+  absent
+  non_pointe
+}
+
+enum MethodePointage {
+  scan
+  manuel
+}
+
+model Apprenti {
+  id          String     @id @default(cuid())
+  identifiant String     @unique
+  nom         String
+  prenom      String
+  groupe      String?
+  actif       Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  presences   Presence[]
+
+  @@index([nom, prenom])
+}
+
+model Presence {
+  id            String          @id @default(cuid())
+  apprenti      Apprenti        @relation(fields: [apprentiId], references: [id], onDelete: Cascade)
+  apprentiId    String
+  date          String
+  statut        StatutPresence  @default(non_pointe)
+  heurePointage String?
+  methode       MethodePointage?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  @@unique([apprentiId, date])
+  @@index([date])
+}
+
+model Admin {
+  id             String   @id @default(cuid())
+  motDePasseHash String
+  createdAt      DateTime @default(now())
+}

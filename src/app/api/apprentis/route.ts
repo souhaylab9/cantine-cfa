@@ -1,0 +1,29 @@
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/db";
+import { genererIdentifiant } from "@/lib/identifiant";
+
+export async function GET() {
+  const apprentis = await prisma.apprenti.findMany({
+    orderBy: [{ nom: "asc" }, { prenom: "asc" }],
+  });
+  return NextResponse.json(apprentis);
+}
+
+export async function POST(request: NextRequest) {
+  const body = await request.json();
+  const nom = String(body.nom ?? "").trim();
+  const prenom = String(body.prenom ?? "").trim();
+  const groupe = body.groupe ? String(body.groupe).trim() : null;
+
+  if (!nom || !prenom) {
+    return NextResponse.json({ erreur: "Nom et prénom requis." }, { status: 400 });
+  }
+
+  const identifiant = await genererIdentifiant();
+
+  const apprenti = await prisma.apprenti.create({
+    data: { nom, prenom, groupe, identifiant },
+  });
+
+  return NextResponse.json(apprenti, { status: 201 });
+}

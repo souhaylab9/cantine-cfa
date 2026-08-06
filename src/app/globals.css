@@ -1,0 +1,116 @@
+@import "tailwindcss";
+
+:root {
+  --papier: #fbf7ef;
+  --papier-ligne: #e7dfc9;
+  --encre: #22303f;
+  --encre-claire: #3a4b5f;
+  --accent: #c68a1f;
+  --accent-clair: #e8c98a;
+  --present: #2f6b3c;
+  --present-clair: #e3ede4;
+  --absent: #b33b2e;
+  --absent-clair: #f4e2df;
+  --neutre: #8a8172;
+  --neutre-clair: #eee8da;
+  --carte: #ffffff;
+  --ombre: 0 1px 2px rgba(34, 48, 63, 0.06), 0 4px 10px rgba(34, 48, 63, 0.08);
+}
+
+@theme inline {
+  --color-papier: var(--papier);
+  --color-encre: var(--encre);
+  --color-encre-claire: var(--encre-claire);
+  --color-accent: var(--accent);
+  --color-accent-clair: var(--accent-clair);
+  --color-present: var(--present);
+  --color-present-clair: var(--present-clair);
+  --color-absent: var(--absent);
+  --color-absent-clair: var(--absent-clair);
+  --color-neutre: var(--neutre);
+  --color-neutre-clair: var(--neutre-clair);
+  --color-carte: var(--carte);
+  --font-titre: var(--font-titre);
+  --font-texte: var(--font-texte);
+  --font-code: var(--font-code);
+}
+
+body {
+  background-color: var(--papier);
+  color: var(--encre);
+  font-family: var(--font-texte), system-ui, sans-serif;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent,
+    transparent 35px,
+    var(--papier-ligne) 36px
+  );
+}
+
+h1,
+h2,
+h3,
+.font-titre {
+  font-family: var(--font-titre), serif;
+}
+
+.font-code {
+  font-family: var(--font-code), monospace;
+}
+
+.carte-cahier {
+  background-color: var(--carte);
+  border: 1px solid rgba(34, 48, 63, 0.08);
+  border-radius: 10px;
+  box-shadow: var(--ombre);
+}
+
+/* Animation tampon encreur */
+@keyframes tampon-frappe {
+  0% {
+    opacity: 0;
+    transform: scale(2.4) rotate(-6deg);
+  }
+  55% {
+    opacity: 1;
+    transform: scale(0.92) rotate(-6deg);
+  }
+  70% {
+    transform: scale(1.05) rotate(-6deg);
+  }
+  85% {
+    transform: scale(0.98) rotate(-6deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(-6deg);
+  }
+}
+
+@keyframes tampon-disparait {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.tampon {
+  animation: tampon-frappe 380ms cubic-bezier(0.2, 0.8, 0.3, 1) forwards,
+    tampon-disparait 400ms ease-in 900ms forwards;
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 10mm;
+  }
+  body {
+    background-image: none;
+    background-color: #fff;
+  }
+  .no-print {
+    display: none !important;
+  }
+}
