@@ -1,20 +1,21 @@
 @import "tailwindcss";
 
 :root {
-  --papier: #fbf7ef;
-  --papier-ligne: #e7dfc9;
-  --encre: #22303f;
-  --encre-claire: #3a4b5f;
-  --accent: #c68a1f;
-  --accent-clair: #e8c98a;
-  --present: #2f6b3c;
-  --present-clair: #e3ede4;
-  --absent: #b33b2e;
-  --absent-clair: #f4e2df;
-  --neutre: #8a8172;
-  --neutre-clair: #eee8da;
-  --carte: #ffffff;
-  --ombre: 0 1px 2px rgba(34, 48, 63, 0.06), 0 4px 10px rgba(34, 48, 63, 0.08);
+  --papier: #0e1117;
+  --papier-eclat: rgba(242, 179, 61, 0.08);
+  --encre: #f4f6fb;
+  --encre-claire: #99a2b5;
+  --accent: #f2b33d;
+  --accent-claire: #ffd98a;
+  --present: #35d68a;
+  --present-clair: rgba(53, 214, 138, 0.14);
+  --absent: #ff6b6b;
+  --absent-clair: rgba(255, 107, 107, 0.14);
+  --neutre: #8991a3;
+  --neutre-clair: rgba(137, 145, 163, 0.14);
+  --carte: #171b24;
+  --bordure: rgba(244, 246, 251, 0.08);
+  --ombre: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 10px 30px rgba(0, 0, 0, 0.45);
 }
 
 @theme inline {
@@ -22,7 +23,7 @@
   --color-encre: var(--encre);
   --color-encre-claire: var(--encre-claire);
   --color-accent: var(--accent);
-  --color-accent-clair: var(--accent-clair);
+  --color-accent-clair: var(--accent-claire);
   --color-present: var(--present);
   --color-present-clair: var(--present-clair);
   --color-absent: var(--absent);
@@ -39,12 +40,13 @@ body {
   background-color: var(--papier);
   color: var(--encre);
   font-family: var(--font-texte), system-ui, sans-serif;
-  background-image: repeating-linear-gradient(
-    to bottom,
-    transparent,
-    transparent 35px,
-    var(--papier-ligne) 36px
-  );
+  background-image:
+    radial-gradient(ellipse 900px 500px at 20% -10%, var(--papier-eclat), transparent 60%),
+    radial-gradient(ellipse 700px 500px at 100% 0%, rgba(53, 214, 138, 0.06), transparent 55%),
+    radial-gradient(circle, rgba(244, 246, 251, 0.05) 1px, transparent 1px);
+  background-size: auto, auto, 22px 22px;
+  background-repeat: no-repeat, no-repeat, repeat;
+  background-attachment: fixed, fixed, local;
 }
 
 h1,
@@ -52,6 +54,7 @@ h2,
 h3,
 .font-titre {
   font-family: var(--font-titre), serif;
+  letter-spacing: -0.01em;
 }
 
 .font-code {
@@ -60,20 +63,23 @@ h3,
 
 .carte-cahier {
   background-color: var(--carte);
-  border: 1px solid rgba(34, 48, 63, 0.08);
-  border-radius: 10px;
+  background-image: linear-gradient(160deg, rgba(244, 246, 251, 0.04), transparent 40%);
+  border: 1px solid var(--bordure);
+  border-radius: 14px;
   box-shadow: var(--ombre);
 }
 
-/* Animation tampon encreur */
+/* Animation tampon — sceau lumineux */
 @keyframes tampon-frappe {
   0% {
     opacity: 0;
-    transform: scale(2.4) rotate(-6deg);
+    transform: scale(2.2) rotate(-6deg);
+    filter: blur(6px);
   }
   55% {
     opacity: 1;
-    transform: scale(0.92) rotate(-6deg);
+    transform: scale(0.94) rotate(-6deg);
+    filter: blur(0);
   }
   70% {
     transform: scale(1.05) rotate(-6deg);
@@ -96,8 +102,20 @@ h3,
   }
 }
 
+@keyframes tampon-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 rgba(53, 214, 138, 0);
+  }
+  50% {
+    box-shadow: 0 0 55px rgba(53, 214, 138, 0.45);
+  }
+}
+
 .tampon {
-  animation: tampon-frappe 380ms cubic-bezier(0.2, 0.8, 0.3, 1) forwards,
+  animation:
+    tampon-frappe 380ms cubic-bezier(0.2, 0.8, 0.3, 1) forwards,
+    tampon-pulse 900ms ease-in-out forwards,
     tampon-disparait 400ms ease-in 900ms forwards;
 }
 
@@ -112,5 +130,16 @@ h3,
   }
   .no-print {
     display: none !important;
+  }
+  .badge-carte,
+  .badge-carte * {
+    color: #000 !important;
+    background-color: #fff !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .badge-carte {
+    border: 1px solid #000 !important;
+    box-shadow: none !important;
   }
 }

@@ -16,9 +16,10 @@ export function EnTete({
   authentifie: boolean;
 }) {
   return (
-    <header className="no-print border-b border-encre/10 bg-papier/95 backdrop-blur">
+    <header className="no-print sticky top-0 z-40 border-b border-encre/10 bg-papier/85 backdrop-blur-md">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
+          <span className="inline-block h-2 w-2 rounded-full bg-accent shadow-[0_0_10px_var(--accent)]" />
           <span className="font-titre text-lg font-semibold text-encre">
             Cantine CFA
           </span>
@@ -31,10 +32,10 @@ export function EnTete({
             <Link
               key={lien.href}
               href={lien.href}
-              className={`rounded-md px-3 py-1.5 text-sm font-medium transition ${
+              className={`rounded-full px-3.5 py-1.5 text-sm font-medium transition ${
                 pageActuelle === lien.href
-                  ? "bg-encre text-papier"
-                  : "text-encre-claire hover:bg-encre/5"
+                  ? "bg-accent text-papier shadow-[0_0_16px_rgba(242,179,61,0.35)]"
+                  : "text-encre-claire hover:bg-encre/8 hover:text-encre"
               }`}
             >
               {lien.label}
@@ -45,7 +46,7 @@ export function EnTete({
           ) : (
             <Link
               href="/login"
-              className="text-sm text-neutre underline hover:text-accent"
+              className="ml-1 text-sm text-neutre underline decoration-encre/20 underline-offset-4 hover:text-accent"
             >
               Connexion
             </Link>

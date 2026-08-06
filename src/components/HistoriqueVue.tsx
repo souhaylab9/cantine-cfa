@@ -80,7 +80,7 @@ export function HistoriqueVue({
               type="month"
               value={mois}
               onChange={(e) => setMois(e.target.value)}
-              className="rounded-md border border-encre/20 bg-papier px-3 py-2 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/30"
+              className="rounded-lg border border-encre/15 bg-papier px-3 py-2 text-sm outline-none focus:border-accent focus:shadow-[0_0_0_3px_rgba(242,179,61,0.15)]"
             />
           </div>
           <div>
@@ -90,7 +90,7 @@ export function HistoriqueVue({
             <select
               value={apprentiId}
               onChange={(e) => setApprentiId(e.target.value)}
-              className="rounded-md border border-encre/20 bg-papier px-3 py-2 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/30"
+              className="rounded-lg border border-encre/15 bg-papier px-3 py-2 text-sm outline-none focus:border-accent focus:shadow-[0_0_0_3px_rgba(242,179,61,0.15)]"
             >
               <option value="">Tous les apprentis</option>
               {apprentis.map((a) => (
@@ -104,13 +104,13 @@ export function HistoriqueVue({
         <div className="flex gap-2">
           <a
             href={`/api/export/csv?${parametresExport.toString()}`}
-            className="rounded-md border border-encre/20 px-4 py-2 text-sm font-medium text-encre-claire hover:bg-encre/5"
+            className="rounded-full border border-encre/15 px-4 py-2 text-sm font-medium text-encre-claire hover:bg-encre/8"
           >
             Export CSV
           </a>
           <a
             href={`/api/export/xlsx?${parametresExport.toString()}`}
-            className="rounded-md bg-encre px-4 py-2 text-sm font-medium text-papier hover:bg-encre-claire"
+            className="rounded-full bg-accent px-4 py-2 text-sm font-semibold text-papier shadow-[0_0_18px_rgba(242,179,61,0.3)] transition hover:brightness-110"
           >
             Export Excel
           </a>

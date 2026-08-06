@@ -122,11 +122,11 @@ export function GestionApprentis({
           placeholder="Rechercher un apprenti…"
           value={recherche}
           onChange={(e) => setRecherche(e.target.value)}
-          className="w-full max-w-xs rounded-md border border-encre/20 bg-carte px-3 py-2 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/30"
+          className="w-full max-w-xs rounded-full border border-encre/15 bg-carte px-3.5 py-2 text-sm outline-none focus:border-accent focus:shadow-[0_0_0_3px_rgba(242,179,61,0.15)]"
         />
         <button
           onClick={ouvrirAjout}
-          className="rounded-md bg-encre px-4 py-2 text-sm font-medium text-papier hover:bg-encre-claire"
+          className="rounded-full bg-accent px-4 py-2 text-sm font-semibold text-papier shadow-[0_0_18px_rgba(242,179,61,0.3)] transition hover:brightness-110"
         >
           + Ajouter un apprenti
         </button>
@@ -194,7 +194,7 @@ export function GestionApprentis({
       </div>
 
       {formulaireOuvert && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-encre/40 px-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4 backdrop-blur-sm">
           <div className="carte-cahier w-full max-w-md p-6">
             <h2 className="font-titre text-xl font-semibold text-encre mb-4">
               {apprentiEnEdition ? "Modifier l'apprenti" : "Ajouter un apprenti"}
@@ -210,7 +210,7 @@ export function GestionApprentis({
                   onChange={(e) =>
                     setBrouillon((b) => ({ ...b, nom: e.target.value }))
                   }
-                  className="w-full rounded-md border border-encre/20 bg-papier px-3 py-2 outline-none focus:border-accent focus:ring-2 focus:ring-accent/30"
+                  className="w-full rounded-lg border border-encre/15 bg-papier px-3 py-2 outline-none focus:border-accent focus:shadow-[0_0_0_3px_rgba(242,179,61,0.15)]"
                 />
               </div>
               <div>
@@ -222,7 +222,7 @@ export function GestionApprentis({
                   onChange={(e) =>
                     setBrouillon((b) => ({ ...b, prenom: e.target.value }))
                   }
-                  className="w-full rounded-md border border-encre/20 bg-papier px-3 py-2 outline-none focus:border-accent focus:ring-2 focus:ring-accent/30"
+                  className="w-full rounded-lg border border-encre/15 bg-papier px-3 py-2 outline-none focus:border-accent focus:shadow-[0_0_0_3px_rgba(242,179,61,0.15)]"
                 />
               </div>
               <div>
@@ -234,7 +234,7 @@ export function GestionApprentis({
                   onChange={(e) =>
                     setBrouillon((b) => ({ ...b, groupe: e.target.value }))
                   }
-                  className="w-full rounded-md border border-encre/20 bg-papier px-3 py-2 outline-none focus:border-accent focus:ring-2 focus:ring-accent/30"
+                  className="w-full rounded-lg border border-encre/15 bg-papier px-3 py-2 outline-none focus:border-accent focus:shadow-[0_0_0_3px_rgba(242,179,61,0.15)]"
                 />
               </div>
               {apprentiEnEdition && (
@@ -254,7 +254,7 @@ export function GestionApprentis({
               <button
                 onClick={enregistrer}
                 disabled={enCours}
-                className="rounded-md bg-encre px-4 py-2 text-sm font-medium text-papier hover:bg-encre-claire disabled:opacity-60"
+                className="rounded-full bg-accent px-4 py-2 text-sm font-semibold text-papier shadow-[0_0_18px_rgba(242,179,61,0.3)] transition hover:brightness-110 disabled:opacity-60"
               >
                 {enCours ? "Enregistrement…" : "Enregistrer"}
               </button>

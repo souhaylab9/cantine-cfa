@@ -153,25 +153,32 @@ export function AppelDuJour({
             valeur={compteurs.present}
             libelle="Présents"
             couleur="text-present"
+            lueur="rgba(53,214,138,0.18)"
           />
           <CompteurCarte
             valeur={compteurs.absent}
             libelle="Absents"
             couleur="text-absent"
+            lueur="rgba(255,107,107,0.18)"
           />
           <CompteurCarte
             valeur={compteurs.nonPointe}
             libelle="Non pointés"
             couleur="text-neutre"
+            lueur="rgba(137,145,163,0.14)"
           />
         </div>
       </div>
 
-      <form onSubmit={handleScanSubmit} className="carte-cahier mb-6 p-4 sm:p-5">
+      <form
+        onSubmit={handleScanSubmit}
+        className="carte-cahier mb-6 border-accent/20 p-4 sm:p-6"
+      >
         <label
           htmlFor="scan"
-          className="mb-2 block text-sm font-medium text-encre-claire"
+          className="mb-2 flex items-center gap-2 text-sm font-medium text-encre-claire"
         >
+          <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-accent" />
           Scanner le badge d&rsquo;un apprenti (ou saisir son identifiant puis
           Entrée)
         </label>
@@ -185,7 +192,7 @@ export function AppelDuJour({
           onChange={(e) => setSaisie(e.target.value)}
           onBlur={() => setTimeout(refocaliser, 50)}
           placeholder="En attente d'un scan…"
-          className="font-code w-full rounded-md border-2 border-encre/15 bg-papier px-4 py-3 text-lg tracking-wide text-encre outline-none focus:border-accent focus:ring-2 focus:ring-accent/30"
+          className="font-code w-full rounded-xl border-2 border-accent/25 bg-papier px-4 py-3.5 text-lg tracking-wide text-encre outline-none transition focus:border-accent focus:shadow-[0_0_0_4px_rgba(242,179,61,0.15)]"
         />
         {erreurScan && (
           <p className="mt-2 text-sm font-medium text-absent">{erreurScan}</p>
@@ -201,7 +208,7 @@ export function AppelDuJour({
           placeholder="Filtrer…"
           value={recherche}
           onChange={(e) => setRecherche(e.target.value)}
-          className="w-full max-w-[180px] rounded-md border border-encre/20 bg-carte px-3 py-1.5 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/30"
+          className="w-full max-w-[180px] rounded-full border border-encre/15 bg-carte px-3.5 py-1.5 text-sm outline-none focus:border-accent focus:shadow-[0_0_0_3px_rgba(242,179,61,0.15)]"
         />
       </div>
 
@@ -230,20 +237,20 @@ export function AppelDuJour({
                 <StatutBadge statut={a.statut} />
                 <button
                   onClick={() => pointerManuellement(a, "present")}
-                  className={`rounded-md px-3 py-1.5 text-xs font-medium transition ${
+                  className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition ${
                     a.statut === "present"
-                      ? "bg-present text-white"
-                      : "bg-present-clair text-present hover:opacity-80"
+                      ? "bg-present text-papier shadow-[0_0_14px_rgba(53,214,138,0.4)]"
+                      : "bg-present-clair text-present hover:brightness-125"
                   }`}
                 >
                   Présent
                 </button>
                 <button
                   onClick={() => pointerManuellement(a, "absent")}
-                  className={`rounded-md px-3 py-1.5 text-xs font-medium transition ${
+                  className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition ${
                     a.statut === "absent"
-                      ? "bg-absent text-white"
-                      : "bg-absent-clair text-absent hover:opacity-80"
+                      ? "bg-absent text-papier shadow-[0_0_14px_rgba(255,107,107,0.4)]"
+                      : "bg-absent-clair text-absent hover:brightness-125"
                   }`}
                 >
                   Absent
@@ -262,13 +269,13 @@ export function AppelDuJour({
       {tampon && (
         <div
           key={tampon.cle}
-          className="pointer-events-none fixed inset-0 z-50 flex items-center justify-center"
+          className="pointer-events-none fixed inset-0 z-50 flex items-center justify-center bg-papier/40 backdrop-blur-sm"
         >
-          <div className="tampon rounded-lg border-[6px] border-double border-present bg-present/10 px-8 py-4 text-center backdrop-blur-[1px]">
-            <p className="font-titre text-4xl font-bold uppercase tracking-wider text-present">
+          <div className="tampon rounded-2xl border border-present/40 bg-carte/90 px-10 py-6 text-center shadow-[0_0_60px_rgba(53,214,138,0.35)]">
+            <p className="font-titre text-4xl font-bold uppercase tracking-wider text-present drop-shadow-[0_0_18px_rgba(53,214,138,0.6)]">
               Présent ✓
             </p>
-            <p className="font-code mt-1 text-sm text-present/80">{tampon.nom}</p>
+            <p className="font-code mt-1 text-sm text-encre-claire">{tampon.nom}</p>
           </div>
         </div>
       )}
@@ -280,13 +287,18 @@ function CompteurCarte({
   valeur,
   libelle,
   couleur,
+  lueur,
 }: {
   valeur: number;
   libelle: string;
   couleur: string;
+  lueur: string;
 }) {
   return (
-    <div className="carte-cahier min-w-[92px] px-4 py-2 text-center">
+    <div
+      className="carte-cahier min-w-[96px] px-4 py-3 text-center"
+      style={{ boxShadow: `${"var(--ombre)"}, 0 0 24px ${lueur}` }}
+    >
       <p className={`font-titre text-2xl font-bold ${couleur}`}>{valeur}</p>
       <p className="text-xs text-neutre">{libelle}</p>
     </div>

@@ -48,20 +48,20 @@ export function FeuilleBadges({ badges }: { badges: Badge[] }) {
           <div className="flex gap-2">
             <button
               onClick={toutSelectionner}
-              className="rounded-md px-3 py-1.5 text-xs font-medium text-encre-claire hover:bg-encre/5"
+              className="rounded-full px-3 py-1.5 text-xs font-medium text-encre-claire hover:bg-encre/8"
             >
               Tout sélectionner
             </button>
             <button
               onClick={toutDeselectionner}
-              className="rounded-md px-3 py-1.5 text-xs font-medium text-encre-claire hover:bg-encre/5"
+              className="rounded-full px-3 py-1.5 text-xs font-medium text-encre-claire hover:bg-encre/8"
             >
               Tout désélectionner
             </button>
             <button
               onClick={() => window.print()}
               disabled={badgesSelectionnes.length === 0}
-              className="rounded-md bg-encre px-4 py-1.5 text-sm font-medium text-papier hover:bg-encre-claire disabled:opacity-50"
+              className="rounded-full bg-accent px-4 py-1.5 text-sm font-semibold text-papier shadow-[0_0_18px_rgba(242,179,61,0.3)] transition hover:brightness-110 disabled:opacity-50"
             >
               Imprimer la feuille (A4)
             </button>
@@ -91,7 +91,7 @@ export function FeuilleBadges({ badges }: { badges: Badge[] }) {
         {badgesSelectionnes.map((b) => (
           <div
             key={b.id}
-            className="carte-cahier flex w-full items-center gap-3 p-3 print:h-[54mm] print:w-[90mm] print:break-inside-avoid print:rounded-none print:border print:border-encre/30 print:shadow-none"
+            className="badge-carte carte-cahier flex w-full items-center gap-3 p-3 print:h-[54mm] print:w-[90mm] print:break-inside-avoid print:rounded-none print:shadow-none"
           >
             <div className="flex-1">
               <p className="font-code text-[10px] uppercase tracking-widest text-accent">
@@ -109,12 +109,14 @@ export function FeuilleBadges({ badges }: { badges: Badge[] }) {
                 {b.identifiant}
               </p>
             </div>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={b.qrDataUrl}
-              alt={`QR code ${b.identifiant}`}
-              className="h-20 w-20 shrink-0 print:h-[22mm] print:w-[22mm]"
-            />
+            <div className="shrink-0 rounded-lg bg-white p-1.5 print:rounded-none print:p-0">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={b.qrDataUrl}
+                alt={`QR code ${b.identifiant}`}
+                className="h-16 w-16 print:h-[22mm] print:w-[22mm]"
+              />
+            </div>
           </div>
         ))}
       </div>
