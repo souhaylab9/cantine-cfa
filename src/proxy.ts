@@ -3,7 +3,7 @@ import { getIronSession } from "iron-session";
 import { sessionOptions, type SessionData } from "@/lib/session";
 
 const CHEMINS_PROTEGES = ["/apprentis", "/badges", "/historique"];
-const API_PROTEGES = ["/api/apprentis", "/api/export", "/api/historique"];
+const API_PROTEGES = ["/api/apprentis", "/api/export", "/api/historique", "/api/facturation"];
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;

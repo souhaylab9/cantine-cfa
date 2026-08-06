@@ -37,6 +37,26 @@ npm run build
 npm run start
 ```
 
+## Facturation Pennylane (optionnel)
+
+Depuis l'onglet **Historique**, un bouton crée une facture **brouillon** sur
+Pennylane regroupant tous les apprentis présents sur le mois sélectionné
+(une ligne par apprenti, prix unique par repas). La facture reste en
+brouillon dans Pennylane : elle doit être validée manuellement avant envoi.
+
+Pour l'activer, renseignez dans `.env` :
+
+- `PENNYLANE_API_KEY` : jeton généré dans Pennylane > Paramètres > API
+  ("Company API token").
+- `PENNYLANE_CUSTOMER_ID` : identifiant numérique du client Pennylane à
+  facturer (OPCO, CFA…), visible dans son URL Pennylane.
+- `PENNYLANE_PRIX_REPAS` : prix unique par repas (défaut `4.50`).
+- `PENNYLANE_VAT_RATE` : taux de TVA Pennylane à appliquer (ex. `exempt`,
+  `FR_055`, `FR_200`) — à valider avec votre comptable.
+
+Sans ces variables, le bouton renvoie une erreur explicite plutôt que
+d'échouer silencieusement.
+
 ## Scripts utiles
 
 - `npm run set-admin-password -- <mot-de-passe>` : définit ou change le mot

@@ -48,6 +48,10 @@ export function HistoriqueVue({
   const [resume, setResume] = useState<LigneResume[]>(resumeInitial);
   const [chargement, startChargement] = useTransition();
   const [deploye, setDeploye] = useState<string | null>(null);
+  const [factureEnCours, setFactureEnCours] = useState(false);
+  const [factureMessage, setFactureMessage] = useState<
+    { type: "succes" | "erreur"; texte: string } | null
+  >(null);
 
   useEffect(() => {
     let annule = false;
@@ -67,6 +71,38 @@ export function HistoriqueVue({
 
   const parametresExport = new URLSearchParams({ mois });
   if (apprentiId) parametresExport.set("apprentiId", apprentiId);
+
+  async function creerFacturePennylane() {
+    const confirmation = confirm(
+      `Créer une facture brouillon sur Pennylane pour ${mois}, regroupant tous les apprentis présents ce mois-ci ?\n\nElle sera créée en brouillon (modifiable, non envoyée au client) — vous devrez la valider vous-même dans Pennylane.`,
+    );
+    if (!confirmation) return;
+
+    setFactureEnCours(true);
+    setFactureMessage(null);
+
+    try {
+      const res = await fetch("/api/facturation/pennylane", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mois }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setFactureMessage({ type: "erreur", texte: data.erreur ?? "Échec de la création." });
+      } else {
+        setFactureMessage({
+          type: "succes",
+          texte: `Facture brouillon créée dans Pennylane (${data.nombreLignes} apprenti(s), ${data.montantTotal.toFixed(2)} € HT). À valider dans vos brouillons Pennylane.`,
+        });
+      }
+    } catch {
+      setFactureMessage({ type: "erreur", texte: "Erreur réseau, réessayez." });
+    } finally {
+      setFactureEnCours(false);
+    }
+  }
 
   return (
     <div>
@@ -116,6 +152,33 @@ export function HistoriqueVue({
           </a>
         </div>
       </div>
+
+      <div className="carte-cahier mb-6 flex flex-wrap items-center justify-between gap-3 p-4">
+        <div>
+          <p className="text-sm font-medium text-encre">Facturation Pennylane</p>
+          <p className="text-xs text-neutre">
+            Crée une facture brouillon regroupant tous les apprentis présents sur {mois},
+            à valider ensuite dans Pennylane.
+          </p>
+        </div>
+        <button
+          onClick={creerFacturePennylane}
+          disabled={factureEnCours}
+          className="shrink-0 rounded-full border border-accent/40 bg-carte px-4 py-2 text-sm font-semibold text-accent transition hover:bg-present-clair disabled:opacity-60"
+        >
+          {factureEnCours ? "Création…" : "Créer la facture (brouillon)"}
+        </button>
+      </div>
+
+      {factureMessage && (
+        <p
+          className={`mb-6 text-sm font-medium ${
+            factureMessage.type === "succes" ? "text-present" : "text-absent"
+          }`}
+        >
+          {factureMessage.texte}
+        </p>
+      )}
 
       <div className={`carte-cahier overflow-hidden ${chargement ? "opacity-60" : ""}`}>
         <table className="w-full text-left text-sm">
