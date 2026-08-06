@@ -149,24 +149,9 @@ export function AppelDuJour({
           </h1>
         </div>
         <div className="flex gap-3">
-          <CompteurCarte
-            valeur={compteurs.present}
-            libelle="Présents"
-            couleur="text-present"
-            lueur="rgba(53,214,138,0.18)"
-          />
-          <CompteurCarte
-            valeur={compteurs.absent}
-            libelle="Absents"
-            couleur="text-absent"
-            lueur="rgba(255,107,107,0.18)"
-          />
-          <CompteurCarte
-            valeur={compteurs.nonPointe}
-            libelle="Non pointés"
-            couleur="text-neutre"
-            lueur="rgba(137,145,163,0.14)"
-          />
+          <CompteurCarte valeur={compteurs.present} libelle="Présents" couleur="text-present" />
+          <CompteurCarte valeur={compteurs.absent} libelle="Absents" couleur="text-absent" />
+          <CompteurCarte valeur={compteurs.nonPointe} libelle="Non pointés" couleur="text-neutre" />
         </div>
       </div>
 
@@ -192,7 +177,7 @@ export function AppelDuJour({
           onChange={(e) => setSaisie(e.target.value)}
           onBlur={() => setTimeout(refocaliser, 50)}
           placeholder="En attente d'un scan…"
-          className="font-code w-full rounded-xl border-2 border-accent/25 bg-papier px-4 py-3.5 text-lg tracking-wide text-encre outline-none transition focus:border-accent focus:shadow-[0_0_0_4px_rgba(242,179,61,0.15)]"
+          className="font-code w-full rounded-xl border-2 border-accent/25 bg-papier px-4 py-3.5 text-lg tracking-wide text-encre outline-none transition focus:border-accent focus:shadow-[0_0_0_4px_rgba(116,137,106,0.18)]"
         />
         {erreurScan && (
           <p className="mt-2 text-sm font-medium text-absent">{erreurScan}</p>
@@ -208,7 +193,7 @@ export function AppelDuJour({
           placeholder="Filtrer…"
           value={recherche}
           onChange={(e) => setRecherche(e.target.value)}
-          className="w-full max-w-[180px] rounded-full border border-encre/15 bg-carte px-3.5 py-1.5 text-sm outline-none focus:border-accent focus:shadow-[0_0_0_3px_rgba(242,179,61,0.15)]"
+          className="w-full max-w-[180px] rounded-full border border-encre/15 bg-carte px-3.5 py-1.5 text-sm outline-none focus:border-accent focus:shadow-[0_0_0_3px_rgba(116,137,106,0.18)]"
         />
       </div>
 
@@ -239,8 +224,8 @@ export function AppelDuJour({
                   onClick={() => pointerManuellement(a, "present")}
                   className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition ${
                     a.statut === "present"
-                      ? "bg-present text-papier shadow-[0_0_14px_rgba(53,214,138,0.4)]"
-                      : "bg-present-clair text-present hover:brightness-125"
+                      ? "bg-present text-papier shadow-[0_2px_10px_rgba(95,125,82,0.35)]"
+                      : "bg-present-clair text-present hover:brightness-95"
                   }`}
                 >
                   Présent
@@ -249,8 +234,8 @@ export function AppelDuJour({
                   onClick={() => pointerManuellement(a, "absent")}
                   className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition ${
                     a.statut === "absent"
-                      ? "bg-absent text-papier shadow-[0_0_14px_rgba(255,107,107,0.4)]"
-                      : "bg-absent-clair text-absent hover:brightness-125"
+                      ? "bg-absent text-papier shadow-[0_2px_10px_rgba(28,28,24,0.3)]"
+                      : "bg-absent-clair text-absent hover:brightness-95"
                   }`}
                 >
                   Absent
@@ -269,10 +254,10 @@ export function AppelDuJour({
       {tampon && (
         <div
           key={tampon.cle}
-          className="pointer-events-none fixed inset-0 z-50 flex items-center justify-center bg-papier/40 backdrop-blur-sm"
+          className="pointer-events-none fixed inset-0 z-50 flex items-center justify-center bg-black/10 backdrop-blur-sm"
         >
-          <div className="tampon rounded-2xl border border-present/40 bg-carte/90 px-10 py-6 text-center shadow-[0_0_60px_rgba(53,214,138,0.35)]">
-            <p className="font-titre text-4xl font-bold uppercase tracking-wider text-present drop-shadow-[0_0_18px_rgba(53,214,138,0.6)]">
+          <div className="tampon rounded-2xl border-2 border-present/50 bg-carte px-10 py-6 text-center shadow-[0_20px_50px_rgba(23,23,19,0.18)]">
+            <p className="font-titre text-4xl font-bold uppercase tracking-wider text-present">
               Présent ✓
             </p>
             <p className="font-code mt-1 text-sm text-encre-claire">{tampon.nom}</p>
@@ -287,18 +272,13 @@ function CompteurCarte({
   valeur,
   libelle,
   couleur,
-  lueur,
 }: {
   valeur: number;
   libelle: string;
   couleur: string;
-  lueur: string;
 }) {
   return (
-    <div
-      className="carte-cahier min-w-[96px] px-4 py-3 text-center"
-      style={{ boxShadow: `${"var(--ombre)"}, 0 0 24px ${lueur}` }}
-    >
+    <div className="carte-cahier min-w-[96px] px-4 py-3 text-center">
       <p className={`font-titre text-2xl font-bold ${couleur}`}>{valeur}</p>
       <p className="text-xs text-neutre">{libelle}</p>
     </div>

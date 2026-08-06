@@ -55,14 +55,14 @@ function FormulaireConnexion() {
             required
             value={motDePasse}
             onChange={(e) => setMotDePasse(e.target.value)}
-            className="w-full rounded-lg border border-encre/15 bg-papier px-3 py-2 text-encre outline-none focus:border-accent focus:shadow-[0_0_0_3px_rgba(242,179,61,0.15)]"
+            className="w-full rounded-lg border border-encre/15 bg-papier px-3 py-2 text-encre outline-none focus:border-accent focus:shadow-[0_0_0_3px_rgba(116,137,106,0.18)]"
           />
         </div>
         {erreur && <p className="text-sm text-absent">{erreur}</p>}
         <button
           type="submit"
           disabled={enCours}
-          className="w-full rounded-full bg-accent px-4 py-2.5 font-semibold text-papier shadow-[0_0_18px_rgba(242,179,61,0.3)] transition hover:brightness-110 disabled:opacity-60"
+          className="w-full rounded-full bg-accent px-4 py-2.5 font-semibold text-papier shadow-[0_4px_14px_rgba(116,137,106,0.3)] transition hover:brightness-110 disabled:opacity-60"
         >
           {enCours ? "Connexion…" : "Se connecter"}
         </button>

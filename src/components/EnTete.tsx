@@ -34,7 +34,7 @@ export function EnTete({
               href={lien.href}
               className={`rounded-full px-3.5 py-1.5 text-sm font-medium transition ${
                 pageActuelle === lien.href
-                  ? "bg-accent text-papier shadow-[0_0_16px_rgba(242,179,61,0.35)]"
+                  ? "bg-accent text-papier shadow-[0_4px_14px_rgba(116,137,106,0.35)]"
                   : "text-encre-claire hover:bg-encre/8 hover:text-encre"
               }`}
             >

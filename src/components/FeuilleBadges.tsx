@@ -61,7 +61,7 @@ export function FeuilleBadges({ badges }: { badges: Badge[] }) {
             <button
               onClick={() => window.print()}
               disabled={badgesSelectionnes.length === 0}
-              className="rounded-full bg-accent px-4 py-1.5 text-sm font-semibold text-papier shadow-[0_0_18px_rgba(242,179,61,0.3)] transition hover:brightness-110 disabled:opacity-50"
+              className="rounded-full bg-accent px-4 py-1.5 text-sm font-semibold text-papier shadow-[0_4px_14px_rgba(116,137,106,0.3)] transition hover:brightness-110 disabled:opacity-50"
             >
               Imprimer la feuille (A4)
             </button>

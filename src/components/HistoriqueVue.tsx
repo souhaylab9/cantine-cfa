@@ -80,7 +80,7 @@ export function HistoriqueVue({
               type="month"
               value={mois}
               onChange={(e) => setMois(e.target.value)}
-              className="rounded-lg border border-encre/15 bg-papier px-3 py-2 text-sm outline-none focus:border-accent focus:shadow-[0_0_0_3px_rgba(242,179,61,0.15)]"
+              className="rounded-lg border border-encre/15 bg-papier px-3 py-2 text-sm outline-none focus:border-accent focus:shadow-[0_0_0_3px_rgba(116,137,106,0.18)]"
             />
           </div>
           <div>
@@ -90,7 +90,7 @@ export function HistoriqueVue({
             <select
               value={apprentiId}
               onChange={(e) => setApprentiId(e.target.value)}
-              className="rounded-lg border border-encre/15 bg-papier px-3 py-2 text-sm outline-none focus:border-accent focus:shadow-[0_0_0_3px_rgba(242,179,61,0.15)]"
+              className="rounded-lg border border-encre/15 bg-papier px-3 py-2 text-sm outline-none focus:border-accent focus:shadow-[0_0_0_3px_rgba(116,137,106,0.18)]"
             >
               <option value="">Tous les apprentis</option>
               {apprentis.map((a) => (
@@ -110,7 +110,7 @@ export function HistoriqueVue({
           </a>
           <a
             href={`/api/export/xlsx?${parametresExport.toString()}`}
-            className="rounded-full bg-accent px-4 py-2 text-sm font-semibold text-papier shadow-[0_0_18px_rgba(242,179,61,0.3)] transition hover:brightness-110"
+            className="rounded-full bg-accent px-4 py-2 text-sm font-semibold text-papier shadow-[0_4px_14px_rgba(116,137,106,0.3)] transition hover:brightness-110"
           >
             Export Excel
           </a>
