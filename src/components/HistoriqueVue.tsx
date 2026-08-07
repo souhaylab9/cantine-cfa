@@ -50,7 +50,7 @@ export function HistoriqueVue({
   const [deploye, setDeploye] = useState<string | null>(null);
   const [factureEnCours, setFactureEnCours] = useState(false);
   const [factureMessage, setFactureMessage] = useState<
-    { type: "succes" | "erreur"; texte: string } | null
+    { type: "succes" | "erreur"; texte: string; lien?: string } | null
   >(null);
 
   useEffect(() => {
@@ -72,9 +72,9 @@ export function HistoriqueVue({
   const parametresExport = new URLSearchParams({ mois });
   if (apprentiId) parametresExport.set("apprentiId", apprentiId);
 
-  async function creerFacturePennylane() {
+  async function genererFactureDuMois() {
     const confirmation = confirm(
-      `Créer une facture brouillon sur Pennylane pour ${mois}, regroupant tous les apprentis présents ce mois-ci ?\n\nElle sera créée en brouillon (modifiable, non envoyée au client) — vous devrez la valider vous-même dans Pennylane.`,
+      `Générer la facture brouillon Pennylane pour ${mois} ?\n\nElle regroupera toutes les présences du mois en une seule ligne, restera en brouillon (non envoyée) et devra être validée manuellement dans Pennylane.`,
     );
     if (!confirmation) return;
 
@@ -94,7 +94,8 @@ export function HistoriqueVue({
       } else {
         setFactureMessage({
           type: "succes",
-          texte: `Facture brouillon créée dans Pennylane (${data.nombreLignes} apprenti(s), ${data.montantTotal.toFixed(2)} € HT). À valider dans vos brouillons Pennylane.`,
+          texte: `Facture brouillon créée : ${data.nombrePresences} présences × ${data.prixRepas}€ = ${data.montantTotal.toFixed(2)} € HT.`,
+          lien: data.lienFacture,
         });
       }
     } catch {
@@ -157,27 +158,37 @@ export function HistoriqueVue({
         <div>
           <p className="text-sm font-medium text-encre">Facturation Pennylane</p>
           <p className="text-xs text-neutre">
-            Crée une facture brouillon regroupant tous les apprentis présents sur {mois},
-            à valider ensuite dans Pennylane.
+            Génère une facture brouillon regroupant le total des présences de {mois} en
+            une ligne, à valider ensuite dans Pennylane.
           </p>
         </div>
         <button
-          onClick={creerFacturePennylane}
+          onClick={genererFactureDuMois}
           disabled={factureEnCours}
           className="shrink-0 rounded-full border border-accent/40 bg-carte px-4 py-2 text-sm font-semibold text-accent transition hover:bg-present-clair disabled:opacity-60"
         >
-          {factureEnCours ? "Création…" : "Créer la facture (brouillon)"}
+          {factureEnCours ? "Génération…" : "Générer la facture du mois"}
         </button>
       </div>
 
       {factureMessage && (
-        <p
+        <div
           className={`mb-6 text-sm font-medium ${
             factureMessage.type === "succes" ? "text-present" : "text-absent"
           }`}
         >
-          {factureMessage.texte}
-        </p>
+          <p>{factureMessage.texte}</p>
+          {factureMessage.lien && (
+            <a
+              href={factureMessage.lien}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-accent underline hover:no-underline"
+            >
+              Ouvrir la facture dans Pennylane →
+            </a>
+          )}
+        </div>
       )}
 
       <div className={`carte-cahier overflow-hidden ${chargement ? "opacity-60" : ""}`}>
