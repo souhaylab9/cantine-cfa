@@ -1,8 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { format, parseISO } from "date-fns";
-import { fr } from "date-fns/locale";
 
 type Statut = "present" | "absent" | "non_pointe";
 
@@ -24,7 +22,6 @@ const LIBELLES_STATUT: Record<Statut, string> = {
 
 export function AppelDuJour({
   apprentisInitiaux,
-  date,
 }: {
   apprentisInitiaux: LigneApprenti[];
   date: string;
@@ -135,30 +132,15 @@ export function AppelDuJour({
     refocaliser();
   }
 
-  const dateAffichee = format(parseISO(date), "EEEE d MMMM yyyy", { locale: fr });
-
   return (
     <div onClick={gererClicFond}>
-      <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <p className="font-code text-xs uppercase tracking-widest text-neutre">
-            Appel du jour
-          </p>
-          <h1 className="font-titre text-3xl font-semibold capitalize text-encre">
-            {dateAffichee}
-          </h1>
-        </div>
-        <div className="flex gap-3">
-          <CompteurCarte valeur={compteurs.present} libelle="Présents" couleur="text-present" />
-          <CompteurCarte valeur={compteurs.absent} libelle="Absents" couleur="text-absent" />
-          <CompteurCarte valeur={compteurs.nonPointe} libelle="Non pointés" couleur="text-neutre" />
-        </div>
+      <div className="mb-5 grid grid-cols-3 gap-3 sm:max-w-md">
+        <CompteurCarte valeur={compteurs.present} libelle="Présents" couleur="text-present" />
+        <CompteurCarte valeur={compteurs.absent} libelle="Absents" couleur="text-absent" />
+        <CompteurCarte valeur={compteurs.nonPointe} libelle="Non pointés" couleur="text-neutre" />
       </div>
 
-      <form
-        onSubmit={handleScanSubmit}
-        className="carte-cahier mb-6 border-accent/20 p-4 sm:p-6"
-      >
+      <form onSubmit={handleScanSubmit} className="carte-cahier mb-5 p-4 sm:p-5">
         <label
           htmlFor="scan"
           className="mb-2 flex items-center gap-2 text-sm font-medium text-encre-claire"
@@ -177,15 +159,15 @@ export function AppelDuJour({
           onChange={(e) => setSaisie(e.target.value)}
           onBlur={() => setTimeout(refocaliser, 50)}
           placeholder="En attente d'un scan…"
-          className="font-code w-full rounded-xl border-2 border-accent/25 bg-papier px-4 py-3.5 text-lg tracking-wide text-encre outline-none transition focus:border-accent focus:shadow-[0_0_0_4px_rgba(116,137,106,0.18)]"
+          className="font-code w-full rounded-xl border border-bordure bg-papier px-4 py-3 text-lg tracking-wide text-encre outline-none transition focus:border-accent focus:shadow-[0_0_0_3px_rgba(92,138,95,0.18)]"
         />
         {erreurScan && (
           <p className="mt-2 text-sm font-medium text-absent">{erreurScan}</p>
         )}
       </form>
 
-      <div className="mb-4 flex items-center justify-between gap-3">
-        <h2 className="font-titre text-lg font-semibold text-encre">
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <h2 className="font-titre text-base font-semibold text-encre">
           Liste de secours — pointage manuel
         </h2>
         <input
@@ -193,62 +175,73 @@ export function AppelDuJour({
           placeholder="Filtrer…"
           value={recherche}
           onChange={(e) => setRecherche(e.target.value)}
-          className="w-full max-w-[180px] rounded-full border border-encre/15 bg-carte px-3.5 py-1.5 text-sm outline-none focus:border-accent focus:shadow-[0_0_0_3px_rgba(116,137,106,0.18)]"
+          className="w-full max-w-[180px] rounded-lg border border-bordure bg-carte px-3 py-1.5 text-sm outline-none focus:border-accent focus:shadow-[0_0_0_3px_rgba(92,138,95,0.18)]"
         />
       </div>
 
       <div className="carte-cahier overflow-hidden">
-        <ul className="divide-y divide-encre/5">
-          {apprentisFiltres.map((a) => (
-            <li
-              key={a.id}
-              className="flex flex-wrap items-center justify-between gap-3 px-4 py-3"
-            >
-              <div>
-                <p className="font-medium text-encre">
-                  {a.prenom} {a.nom}
-                  {a.groupe && (
-                    <span className="ml-2 text-xs font-normal text-neutre">
-                      {a.groupe}
-                    </span>
+        <table className="w-full text-left text-sm">
+          <thead>
+            <tr className="border-b border-bordure text-xs uppercase tracking-wide text-encre-claire">
+              <th className="px-4 py-2.5 font-medium">Apprenti</th>
+              <th className="px-4 py-2.5 font-medium">Identifiant</th>
+              <th className="px-4 py-2.5 font-medium">Statut</th>
+              <th className="px-4 py-2.5 font-medium text-right">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {apprentisFiltres.map((a) => (
+              <tr key={a.id} className="border-b border-bordure last:border-0 hover:bg-papier/60">
+                <td className="px-4 py-2.5">
+                  <p className="font-medium text-encre">
+                    {a.prenom} {a.nom}
+                  </p>
+                  {a.groupe && <p className="text-xs text-encre-claire">{a.groupe}</p>}
+                </td>
+                <td className="px-4 py-2.5">
+                  <p className="font-code text-xs text-encre-claire">{a.identifiant}</p>
+                  {a.heurePointage && (
+                    <p className="text-xs text-encre-claire">{a.heurePointage}</p>
                   )}
-                </p>
-                <p className="font-code text-xs text-neutre">
-                  {a.identifiant}
-                  {a.heurePointage ? ` · pointé à ${a.heurePointage}` : ""}
-                </p>
-              </div>
-              <div className="flex items-center gap-2">
-                <StatutBadge statut={a.statut} />
-                <button
-                  onClick={() => pointerManuellement(a, "present")}
-                  className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition ${
-                    a.statut === "present"
-                      ? "bg-present text-papier shadow-[0_2px_10px_rgba(95,125,82,0.35)]"
-                      : "bg-present-clair text-present hover:brightness-95"
-                  }`}
-                >
-                  Présent
-                </button>
-                <button
-                  onClick={() => pointerManuellement(a, "absent")}
-                  className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition ${
-                    a.statut === "absent"
-                      ? "bg-absent text-papier shadow-[0_2px_10px_rgba(28,28,24,0.3)]"
-                      : "bg-absent-clair text-absent hover:brightness-95"
-                  }`}
-                >
-                  Absent
-                </button>
-              </div>
-            </li>
-          ))}
-          {apprentisFiltres.length === 0 && (
-            <li className="px-4 py-8 text-center text-neutre">
-              Aucun apprenti ne correspond à ce filtre.
-            </li>
-          )}
-        </ul>
+                </td>
+                <td className="px-4 py-2.5">
+                  <StatutBadge statut={a.statut} />
+                </td>
+                <td className="px-4 py-2.5">
+                  <div className="flex items-center justify-end gap-1.5">
+                    <button
+                      onClick={() => pointerManuellement(a, "present")}
+                      className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
+                        a.statut === "present"
+                          ? "bg-present text-white"
+                          : "bg-present-clair text-present hover:brightness-95"
+                      }`}
+                    >
+                      Présent
+                    </button>
+                    <button
+                      onClick={() => pointerManuellement(a, "absent")}
+                      className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
+                        a.statut === "absent"
+                          ? "bg-absent text-white"
+                          : "bg-absent-clair text-absent hover:brightness-95"
+                      }`}
+                    >
+                      Absent
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+            {apprentisFiltres.length === 0 && (
+              <tr>
+                <td colSpan={4} className="px-4 py-8 text-center text-encre-claire">
+                  Aucun apprenti ne correspond à ce filtre.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
 
       {tampon && (
@@ -256,7 +249,7 @@ export function AppelDuJour({
           key={tampon.cle}
           className="pointer-events-none fixed inset-0 z-50 flex items-center justify-center bg-black/10 backdrop-blur-sm"
         >
-          <div className="tampon rounded-2xl border-2 border-present/50 bg-carte px-10 py-6 text-center shadow-[0_20px_50px_rgba(23,23,19,0.18)]">
+          <div className="tampon rounded-2xl border-2 border-present/50 bg-carte px-10 py-6 text-center shadow-[0_20px_50px_rgba(38,48,42,0.18)]">
             <p className="font-titre text-4xl font-bold uppercase tracking-wider text-present">
               Présent ✓
             </p>
@@ -278,9 +271,9 @@ function CompteurCarte({
   couleur: string;
 }) {
   return (
-    <div className="carte-cahier min-w-[96px] px-4 py-3 text-center">
+    <div className="carte-cahier px-4 py-3">
       <p className={`font-titre text-2xl font-bold ${couleur}`}>{valeur}</p>
-      <p className="text-xs text-neutre">{libelle}</p>
+      <p className="text-xs text-encre-claire">{libelle}</p>
     </div>
   );
 }

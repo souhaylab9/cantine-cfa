@@ -1,20 +1,21 @@
 @import "tailwindcss";
 
 :root {
-  --papier: #fafaf7;
-  --encre: #171713;
-  --encre-claire: #6c6c63;
-  --accent: #74896a;
-  --accent-claire: #aebc9f;
-  --present: #5f7d52;
-  --present-clair: rgba(95, 125, 82, 0.12);
-  --absent: #1c1c18;
-  --absent-clair: rgba(28, 28, 24, 0.07);
-  --neutre: #97968b;
-  --neutre-clair: rgba(151, 150, 139, 0.12);
+  --papier: #f7f6ef;
+  --encre: #26302a;
+  --encre-claire: #74806f;
+  --accent: #5c8a5f;
+  --accent-fonce: #446b47;
+  --present: #4e8452;
+  --present-clair: #e7f1e4;
+  --absent: #c97a4a;
+  --absent-clair: #fbeee2;
+  --neutre: #8b9187;
+  --neutre-clair: #ececdf;
   --carte: #ffffff;
-  --bordure: rgba(23, 23, 19, 0.09);
-  --ombre: 0 1px 2px rgba(23, 23, 19, 0.04), 0 8px 24px rgba(23, 23, 19, 0.06);
+  --bordure: #e4e4d6;
+  --ombre: 0 1px 2px rgba(38, 48, 42, 0.03), 0 4px 14px rgba(38, 48, 42, 0.06);
+  --font-titre: var(--font-texte);
 }
 
 @theme inline {
@@ -22,7 +23,7 @@
   --color-encre: var(--encre);
   --color-encre-claire: var(--encre-claire);
   --color-accent: var(--accent);
-  --color-accent-clair: var(--accent-claire);
+  --color-accent-clair: var(--accent-fonce);
   --color-present: var(--present);
   --color-present-clair: var(--present-clair);
   --color-absent: var(--absent);
@@ -30,6 +31,7 @@
   --color-neutre: var(--neutre);
   --color-neutre-clair: var(--neutre-clair);
   --color-carte: var(--carte);
+  --color-bordure: var(--bordure);
   --font-titre: var(--font-titre);
   --font-texte: var(--font-texte);
   --font-code: var(--font-code);
@@ -39,19 +41,13 @@ body {
   background-color: var(--papier);
   color: var(--encre);
   font-family: var(--font-texte), system-ui, sans-serif;
-  background-image:
-    radial-gradient(ellipse 900px 500px at 100% -10%, rgba(116, 137, 106, 0.07), transparent 60%),
-    radial-gradient(circle, rgba(23, 23, 19, 0.045) 1px, transparent 1px);
-  background-size: auto, 22px 22px;
-  background-repeat: no-repeat, repeat;
-  background-attachment: fixed, local;
 }
 
 h1,
 h2,
 h3,
 .font-titre {
-  font-family: var(--font-titre), serif;
+  font-family: var(--font-titre), system-ui, sans-serif;
   letter-spacing: -0.01em;
 }
 
@@ -62,31 +58,31 @@ h3,
 .carte-cahier {
   background-color: var(--carte);
   border: 1px solid var(--bordure);
-  border-radius: 14px;
+  border-radius: 12px;
   box-shadow: var(--ombre);
 }
 
-/* Animation tampon — sceau sauge */
+/* Animation tampon */
 @keyframes tampon-frappe {
   0% {
     opacity: 0;
-    transform: scale(2.2) rotate(-6deg);
+    transform: scale(2.2) rotate(-4deg);
     filter: blur(6px);
   }
   55% {
     opacity: 1;
-    transform: scale(0.94) rotate(-6deg);
+    transform: scale(0.94) rotate(-4deg);
     filter: blur(0);
   }
   70% {
-    transform: scale(1.05) rotate(-6deg);
+    transform: scale(1.05) rotate(-4deg);
   }
   85% {
-    transform: scale(0.98) rotate(-6deg);
+    transform: scale(0.98) rotate(-4deg);
   }
   100% {
     opacity: 1;
-    transform: scale(1) rotate(-6deg);
+    transform: scale(1) rotate(-4deg);
   }
 }
 
@@ -99,20 +95,9 @@ h3,
   }
 }
 
-@keyframes tampon-pulse {
-  0%,
-  100% {
-    box-shadow: 0 0 0 rgba(95, 125, 82, 0);
-  }
-  50% {
-    box-shadow: 0 12px 40px rgba(95, 125, 82, 0.28);
-  }
-}
-
 .tampon {
   animation:
     tampon-frappe 380ms cubic-bezier(0.2, 0.8, 0.3, 1) forwards,
-    tampon-pulse 900ms ease-in-out forwards,
     tampon-disparait 400ms ease-in 900ms forwards;
 }
 

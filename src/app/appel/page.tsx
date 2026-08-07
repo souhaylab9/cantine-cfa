@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/db";
-import { EnTete } from "@/components/EnTete";
+import { CoquilleApp } from "@/components/CoquilleApp";
 import { AppelDuJour } from "@/components/AppelDuJour";
 import { getSession } from "@/lib/session";
 import { aujourdHui } from "@/lib/date";
@@ -33,11 +33,12 @@ export default async function PageAppel() {
   });
 
   return (
-    <>
-      <EnTete pageActuelle="/appel" authentifie={Boolean(session.authentifie)} />
-      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6">
-        <AppelDuJour apprentisInitiaux={donnees} date={date} />
-      </main>
-    </>
+    <CoquilleApp
+      section="/appel"
+      titre="Appel du jour"
+      authentifie={Boolean(session.authentifie)}
+    >
+      <AppelDuJour apprentisInitiaux={donnees} date={date} />
+    </CoquilleApp>
   );
 }
