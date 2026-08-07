@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getIronSession } from "iron-session";
 import { sessionOptions, type SessionData } from "@/lib/session";
 
-const CHEMINS_PROTEGES = ["/apprentis", "/badges", "/historique"];
+const CHEMINS_PROTEGES = ["/apprentis", "/badges", "/historique", "/facturation"];
 const API_PROTEGES = ["/api/apprentis", "/api/export", "/api/historique", "/api/facturation"];
 
 export async function proxy(request: NextRequest) {
@@ -37,5 +37,11 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/apprentis/:path*", "/badges/:path*", "/historique/:path*", "/api/:path*"],
+  matcher: [
+    "/apprentis/:path*",
+    "/badges/:path*",
+    "/historique/:path*",
+    "/facturation/:path*",
+    "/api/:path*",
+  ],
 };

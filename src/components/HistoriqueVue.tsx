@@ -48,10 +48,6 @@ export function HistoriqueVue({
   const [resume, setResume] = useState<LigneResume[]>(resumeInitial);
   const [chargement, startChargement] = useTransition();
   const [deploye, setDeploye] = useState<string | null>(null);
-  const [factureEnCours, setFactureEnCours] = useState(false);
-  const [factureMessage, setFactureMessage] = useState<
-    { type: "succes" | "erreur"; texte: string; lien?: string } | null
-  >(null);
 
   useEffect(() => {
     let annule = false;
@@ -72,42 +68,9 @@ export function HistoriqueVue({
   const parametresExport = new URLSearchParams({ mois });
   if (apprentiId) parametresExport.set("apprentiId", apprentiId);
 
-  async function genererFactureDuMois() {
-    const confirmation = confirm(
-      `Générer la facture brouillon Pennylane pour ${mois} ?\n\nElle regroupera toutes les présences du mois en une seule ligne, restera en brouillon (non envoyée) et devra être validée manuellement dans Pennylane.`,
-    );
-    if (!confirmation) return;
-
-    setFactureEnCours(true);
-    setFactureMessage(null);
-
-    try {
-      const res = await fetch("/api/facturation/pennylane", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mois }),
-      });
-      const data = await res.json();
-
-      if (!res.ok) {
-        setFactureMessage({ type: "erreur", texte: data.erreur ?? "Échec de la création." });
-      } else {
-        setFactureMessage({
-          type: "succes",
-          texte: `Facture brouillon créée : ${data.nombrePresences} présences × ${data.prixRepas}€ = ${data.montantTotal.toFixed(2)} € HT.`,
-          lien: data.lienFacture,
-        });
-      }
-    } catch {
-      setFactureMessage({ type: "erreur", texte: "Erreur réseau, réessayez." });
-    } finally {
-      setFactureEnCours(false);
-    }
-  }
-
   return (
     <div>
-      <div className="carte-cahier mb-6 flex flex-wrap items-end justify-between gap-4 p-4">
+      <div className="carte-cahier mb-5 flex flex-wrap items-end justify-between gap-4 p-4">
         <div className="flex flex-wrap gap-4">
           <div>
             <label className="block text-sm font-medium text-encre-claire mb-1">
@@ -117,7 +80,7 @@ export function HistoriqueVue({
               type="month"
               value={mois}
               onChange={(e) => setMois(e.target.value)}
-              className="rounded-lg border border-encre/15 bg-papier px-3 py-2 text-sm outline-none focus:border-accent focus:shadow-[0_0_0_3px_rgba(116,137,106,0.18)]"
+              className="rounded-lg border border-bordure bg-papier px-3 py-2 text-sm outline-none focus:border-accent focus:shadow-[0_0_0_3px_rgba(92,138,95,0.18)]"
             />
           </div>
           <div>
@@ -127,7 +90,7 @@ export function HistoriqueVue({
             <select
               value={apprentiId}
               onChange={(e) => setApprentiId(e.target.value)}
-              className="rounded-lg border border-encre/15 bg-papier px-3 py-2 text-sm outline-none focus:border-accent focus:shadow-[0_0_0_3px_rgba(116,137,106,0.18)]"
+              className="rounded-lg border border-bordure bg-papier px-3 py-2 text-sm outline-none focus:border-accent focus:shadow-[0_0_0_3px_rgba(92,138,95,0.18)]"
             >
               <option value="">Tous les apprentis</option>
               {apprentis.map((a) => (
@@ -141,87 +104,50 @@ export function HistoriqueVue({
         <div className="flex gap-2">
           <a
             href={`/api/export/csv?${parametresExport.toString()}`}
-            className="rounded-full border border-encre/15 px-4 py-2 text-sm font-medium text-encre-claire hover:bg-encre/8"
+            className="rounded-xl border border-bordure px-4 py-2 text-sm font-medium text-encre-claire hover:bg-papier"
           >
             Export CSV
           </a>
           <a
             href={`/api/export/xlsx?${parametresExport.toString()}`}
-            className="rounded-full bg-accent px-4 py-2 text-sm font-semibold text-papier shadow-[0_4px_14px_rgba(116,137,106,0.3)] transition hover:brightness-110"
+            className="rounded-xl bg-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-accent-clair"
           >
             Export Excel
           </a>
         </div>
       </div>
 
-      <div className="carte-cahier mb-6 flex flex-wrap items-center justify-between gap-3 p-4">
-        <div>
-          <p className="text-sm font-medium text-encre">Facturation Pennylane</p>
-          <p className="text-xs text-neutre">
-            Génère une facture brouillon regroupant le total des présences de {mois} en
-            une ligne, à valider ensuite dans Pennylane.
-          </p>
-        </div>
-        <button
-          onClick={genererFactureDuMois}
-          disabled={factureEnCours}
-          className="shrink-0 rounded-full border border-accent/40 bg-carte px-4 py-2 text-sm font-semibold text-accent transition hover:bg-present-clair disabled:opacity-60"
-        >
-          {factureEnCours ? "Génération…" : "Générer la facture du mois"}
-        </button>
-      </div>
-
-      {factureMessage && (
-        <div
-          className={`mb-6 text-sm font-medium ${
-            factureMessage.type === "succes" ? "text-present" : "text-absent"
-          }`}
-        >
-          <p>{factureMessage.texte}</p>
-          {factureMessage.lien && (
-            <a
-              href={factureMessage.lien}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-accent underline hover:no-underline"
-            >
-              Ouvrir la facture dans Pennylane →
-            </a>
-          )}
-        </div>
-      )}
-
       <div className={`carte-cahier overflow-hidden ${chargement ? "opacity-60" : ""}`}>
         <table className="w-full text-left text-sm">
           <thead>
-            <tr className="border-b border-encre/10 text-neutre">
-              <th className="px-4 py-3 font-medium">Apprenti</th>
-              <th className="px-4 py-3 font-medium">Groupe</th>
-              <th className="px-4 py-3 font-medium text-center">Présences</th>
-              <th className="px-4 py-3 font-medium text-center">Absences</th>
-              <th className="px-4 py-3 font-medium text-right">Détail</th>
+            <tr className="border-b border-bordure text-xs uppercase tracking-wide text-encre-claire">
+              <th className="px-4 py-2.5 font-medium">Apprenti</th>
+              <th className="px-4 py-2.5 font-medium">Groupe</th>
+              <th className="px-4 py-2.5 font-medium text-center">Présences</th>
+              <th className="px-4 py-2.5 font-medium text-center">Absences</th>
+              <th className="px-4 py-2.5 font-medium text-right">Détail</th>
             </tr>
           </thead>
           <tbody>
             {resume.map((ligne) => (
               <Fragment key={ligne.apprenti.id}>
-                <tr className="border-b border-encre/5">
-                  <td className="px-4 py-3 font-medium text-encre">
+                <tr className="border-b border-bordure hover:bg-papier/60">
+                  <td className="px-4 py-2.5 font-medium text-encre">
                     {ligne.apprenti.prenom} {ligne.apprenti.nom}
-                    <span className="font-code ml-2 text-xs text-neutre">
+                    <span className="font-code ml-2 text-xs text-encre-claire">
                       {ligne.apprenti.identifiant}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-neutre">
+                  <td className="px-4 py-2.5 text-encre-claire">
                     {ligne.apprenti.groupe || "—"}
                   </td>
-                  <td className="px-4 py-3 text-center font-medium text-present">
+                  <td className="px-4 py-2.5 text-center font-medium text-present">
                     {ligne.present}
                   </td>
-                  <td className="px-4 py-3 text-center font-medium text-absent">
+                  <td className="px-4 py-2.5 text-center font-medium text-absent">
                     {ligne.absent}
                   </td>
-                  <td className="px-4 py-3 text-right">
+                  <td className="px-4 py-2.5 text-right">
                     <button
                       onClick={() =>
                         setDeploye((prev) =>
@@ -235,10 +161,10 @@ export function HistoriqueVue({
                   </td>
                 </tr>
                 {deploye === ligne.apprenti.id && (
-                  <tr className="border-b border-encre/5 bg-papier/60">
+                  <tr className="border-b border-bordure bg-papier/60">
                     <td colSpan={5} className="px-4 py-3">
                       {ligne.jours.length === 0 ? (
-                        <p className="text-sm text-neutre">
+                        <p className="text-sm text-encre-claire">
                           Aucun pointage ce mois-ci.
                         </p>
                       ) : (
@@ -266,7 +192,7 @@ export function HistoriqueVue({
             ))}
             {resume.length === 0 && (
               <tr>
-                <td colSpan={5} className="px-4 py-8 text-center text-neutre">
+                <td colSpan={5} className="px-4 py-8 text-center text-encre-claire">
                   Aucune donnée pour cette période.
                 </td>
               </tr>

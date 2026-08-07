@@ -34,12 +34,19 @@ function FormulaireConnexion() {
 
   return (
     <div className="carte-cahier w-full max-w-sm p-8">
-      <p className="font-code text-xs tracking-widest text-neutre uppercase mb-2">
-        Cantine CFA
-      </p>
-      <h1 className="font-titre text-2xl font-semibold text-encre mb-6">
-        Accès administration
-      </h1>
+      <div className="mb-6 flex items-center gap-2.5">
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-accent font-titre text-sm font-bold text-white">
+          C
+        </span>
+        <div>
+          <p className="font-code text-[11px] uppercase tracking-widest text-encre-claire">
+            Cantine CFA
+          </p>
+          <h1 className="font-titre text-lg font-semibold text-encre">
+            Accès administration
+          </h1>
+        </div>
+      </div>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label
@@ -55,19 +62,19 @@ function FormulaireConnexion() {
             required
             value={motDePasse}
             onChange={(e) => setMotDePasse(e.target.value)}
-            className="w-full rounded-lg border border-encre/15 bg-papier px-3 py-2 text-encre outline-none focus:border-accent focus:shadow-[0_0_0_3px_rgba(116,137,106,0.18)]"
+            className="w-full rounded-xl border border-bordure bg-papier px-3 py-2 text-encre outline-none focus:border-accent focus:shadow-[0_0_0_3px_rgba(92,138,95,0.18)]"
           />
         </div>
         {erreur && <p className="text-sm text-absent">{erreur}</p>}
         <button
           type="submit"
           disabled={enCours}
-          className="w-full rounded-full bg-accent px-4 py-2.5 font-semibold text-papier shadow-[0_4px_14px_rgba(116,137,106,0.3)] transition hover:brightness-110 disabled:opacity-60"
+          className="w-full rounded-xl bg-accent px-4 py-2.5 font-semibold text-white transition hover:bg-accent-clair disabled:opacity-60"
         >
           {enCours ? "Connexion…" : "Se connecter"}
         </button>
       </form>
-      <p className="mt-6 text-center text-sm text-neutre">
+      <p className="mt-6 text-center text-sm text-encre-claire">
         <a href="/appel" className="underline hover:text-accent">
           Retour à l&rsquo;appel du jour
         </a>

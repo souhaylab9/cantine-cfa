@@ -14,7 +14,7 @@ export function BoutonDeconnexion() {
   return (
     <button
       onClick={handleClick}
-      className="text-sm text-neutre underline hover:text-absent"
+      className="text-sm text-encre-claire underline decoration-encre-claire/30 underline-offset-4 hover:text-encre"
     >
       Déconnexion
     </button>

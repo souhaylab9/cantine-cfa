@@ -42,26 +42,26 @@ export function FeuilleBadges({ badges }: { badges: Badge[] }) {
     <div>
       <div className="no-print carte-cahier mb-6 p-4">
         <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-          <p className="text-sm text-neutre">
+          <p className="text-sm text-encre-claire">
             {badgesSelectionnes.length} / {badges.length} apprenti(s) sélectionné(s)
           </p>
           <div className="flex gap-2">
             <button
               onClick={toutSelectionner}
-              className="rounded-full px-3 py-1.5 text-xs font-medium text-encre-claire hover:bg-encre/8"
+              className="rounded-xl px-3 py-1.5 text-xs font-medium text-encre-claire hover:bg-papier"
             >
               Tout sélectionner
             </button>
             <button
               onClick={toutDeselectionner}
-              className="rounded-full px-3 py-1.5 text-xs font-medium text-encre-claire hover:bg-encre/8"
+              className="rounded-xl px-3 py-1.5 text-xs font-medium text-encre-claire hover:bg-papier"
             >
               Tout désélectionner
             </button>
             <button
               onClick={() => window.print()}
               disabled={badgesSelectionnes.length === 0}
-              className="rounded-full bg-accent px-4 py-1.5 text-sm font-semibold text-papier shadow-[0_4px_14px_rgba(116,137,106,0.3)] transition hover:brightness-110 disabled:opacity-50"
+              className="rounded-xl bg-accent px-4 py-1.5 text-sm font-semibold text-white transition hover:bg-accent-clair disabled:opacity-50"
             >
               Imprimer la feuille (A4)
             </button>
@@ -71,7 +71,7 @@ export function FeuilleBadges({ badges }: { badges: Badge[] }) {
           {badges.map((b) => (
             <label
               key={b.id}
-              className="flex items-center gap-2 rounded-md border border-encre/10 px-2 py-1.5 text-sm"
+              className="flex items-center gap-2 rounded-lg border border-bordure px-2 py-1.5 text-sm"
             >
               <input
                 type="checkbox"
