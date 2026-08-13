@@ -5,8 +5,8 @@ import Link from "next/link";
 import { IdCard, Upload } from "lucide-react";
 import type { Apprenti } from "@/generated/prisma/client";
 
-type Brouillon = { nom: string; prenom: string; groupe: string };
-const BROUILLON_VIDE: Brouillon = { nom: "", prenom: "", groupe: "" };
+type Brouillon = { nom: string; prenom: string; groupe: string; email: string };
+const BROUILLON_VIDE: Brouillon = { nom: "", prenom: "", groupe: "", email: "" };
 
 type ResultatImport = { importes: number; ignores: number; erreurs: string[] };
 
@@ -45,7 +45,7 @@ export function GestionApprentis({
 
   function ouvrirEdition(a: Apprenti) {
     setApprentiEnEdition(a);
-    setBrouillon({ nom: a.nom, prenom: a.prenom, groupe: a.groupe ?? "" });
+    setBrouillon({ nom: a.nom, prenom: a.prenom, groupe: a.groupe ?? "", email: a.email ?? "" });
     setErreur(null);
     setFormulaireOuvert(true);
   }
@@ -221,8 +221,9 @@ export function GestionApprentis({
       )}
 
       <p className="mb-3 text-xs text-encre-claire">
-        Le fichier Excel doit avoir des colonnes Nom, Prénom et (optionnel) Groupe/Classe — avec ou
-        sans ligne d&rsquo;en-tête.
+        Le fichier Excel doit avoir des colonnes Nom, Prénom et (optionnel) Groupe/Classe et E-mail —
+        avec ou sans ligne d&rsquo;en-tête (l&rsquo;e-mail nécessite une ligne d&rsquo;en-tête pour être
+        détecté).
       </p>
 
       <div className="carte-cahier overflow-x-auto">
@@ -233,6 +234,7 @@ export function GestionApprentis({
               <th className="px-4 py-2.5 font-medium">Prénom</th>
               <th className="px-4 py-2.5 font-medium">Identifiant</th>
               <th className="px-4 py-2.5 font-medium">Groupe</th>
+              <th className="px-4 py-2.5 font-medium">E-mail</th>
               <th className="px-4 py-2.5 font-medium">Statut</th>
               <th className="px-4 py-2.5 font-medium text-right">Actions</th>
             </tr>
@@ -246,6 +248,7 @@ export function GestionApprentis({
                   {a.identifiant}
                 </td>
                 <td className="px-4 py-2.5 text-encre-claire">{a.groupe || "—"}</td>
+                <td className="px-4 py-2.5 text-encre-claire">{a.email || "—"}</td>
                 <td className="px-4 py-2.5">
                   <button
                     onClick={() => basculerActif(a)}
@@ -277,7 +280,7 @@ export function GestionApprentis({
             ))}
             {apprentisFiltres.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-encre-claire">
+                <td colSpan={7} className="px-4 py-8 text-center text-encre-claire">
                   Aucun apprenti ne correspond à cette recherche.
                 </td>
               </tr>
@@ -326,6 +329,20 @@ export function GestionApprentis({
                   value={brouillon.groupe}
                   onChange={(e) =>
                     setBrouillon((b) => ({ ...b, groupe: e.target.value }))
+                  }
+                  className="w-full rounded-xl border border-bordure bg-papier px-3 py-2 outline-none focus:border-accent focus:shadow-[0_0_0_3px_rgba(122,42,53,0.18)]"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-encre-claire mb-1">
+                  E-mail (optionnel)
+                </label>
+                <input
+                  type="email"
+                  value={brouillon.email}
+                  placeholder="prenom.nom@exemple.fr"
+                  onChange={(e) =>
+                    setBrouillon((b) => ({ ...b, email: e.target.value }))
                   }
                   className="w-full rounded-xl border border-bordure bg-papier px-3 py-2 outline-none focus:border-accent focus:shadow-[0_0_0_3px_rgba(122,42,53,0.18)]"
                 />

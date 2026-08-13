@@ -14,15 +14,20 @@ export async function POST(request: NextRequest) {
   const nom = String(body.nom ?? "").trim();
   const prenom = String(body.prenom ?? "").trim();
   const groupe = body.groupe ? String(body.groupe).trim() : null;
+  const email = body.email ? String(body.email).trim() : null;
 
   if (!nom || !prenom) {
     return NextResponse.json({ erreur: "Nom et prénom requis." }, { status: 400 });
   }
 
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return NextResponse.json({ erreur: "Adresse e-mail invalide." }, { status: 400 });
+  }
+
   const identifiant = await genererIdentifiant();
 
   const apprenti = await prisma.apprenti.create({
-    data: { nom, prenom, groupe, identifiant },
+    data: { nom, prenom, groupe, email, identifiant },
   });
 
   return NextResponse.json(apprenti, { status: 201 });

@@ -14,6 +14,8 @@ function normaliser(texte: string): string {
 const ENTETES_NOM = ["nom", "nom de famille"];
 const ENTETES_PRENOM = ["prenom", "prénom"];
 const ENTETES_GROUPE = ["groupe", "classe", "formation", "section"];
+const ENTETES_EMAIL = ["email", "e-mail", "mail", "adresse mail", "adresse e-mail"];
+const REGEX_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function POST(request: NextRequest) {
   const formData = await request.formData();
@@ -47,11 +49,13 @@ export async function POST(request: NextRequest) {
   const indexNom = cellulesTexte.findIndex((c) => ENTETES_NOM.includes(c));
   const indexPrenom = cellulesTexte.findIndex((c) => ENTETES_PRENOM.includes(c));
   const indexGroupe = cellulesTexte.findIndex((c) => ENTETES_GROUPE.includes(c));
+  const indexEmail = cellulesTexte.findIndex((c) => ENTETES_EMAIL.includes(c));
 
   const aUneEntete = indexNom !== -1 && indexPrenom !== -1;
   const colNom = aUneEntete ? indexNom + 1 : 1;
   const colPrenom = aUneEntete ? indexPrenom + 1 : 2;
   const colGroupe = aUneEntete ? (indexGroupe !== -1 ? indexGroupe + 1 : null) : 3;
+  const colEmail = aUneEntete && indexEmail !== -1 ? indexEmail + 1 : null;
   const premiereLigneDonnees = aUneEntete ? 2 : 1;
 
   const existants = await prisma.apprenti.findMany({
@@ -70,12 +74,17 @@ export async function POST(request: NextRequest) {
     const brutNom = ligne.getCell(colNom).text?.trim() ?? "";
     const brutPrenom = ligne.getCell(colPrenom).text?.trim() ?? "";
     const brutGroupe = colGroupe ? ligne.getCell(colGroupe).text?.trim() ?? "" : "";
+    const brutEmail = colEmail ? ligne.getCell(colEmail).text?.trim() ?? "" : "";
 
     if (!brutNom && !brutPrenom) continue;
 
     if (!brutNom || !brutPrenom) {
       erreurs.push(`Ligne ${i} : nom ou prénom manquant.`);
       continue;
+    }
+
+    if (brutEmail && !REGEX_EMAIL.test(brutEmail)) {
+      erreurs.push(`Ligne ${i} : adresse e-mail invalide (ignorée).`);
     }
 
     const cle = `${normaliser(brutNom)}|${normaliser(brutPrenom)}`;
@@ -90,6 +99,7 @@ export async function POST(request: NextRequest) {
         nom: brutNom,
         prenom: brutPrenom,
         groupe: brutGroupe || null,
+        email: brutEmail && REGEX_EMAIL.test(brutEmail) ? brutEmail : null,
         identifiant,
       },
     });
