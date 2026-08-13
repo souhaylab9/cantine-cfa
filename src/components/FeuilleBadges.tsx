@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { Mail } from "lucide-react";
 
 interface Badge {
   id: string;
@@ -8,13 +9,18 @@ interface Badge {
   prenom: string;
   identifiant: string;
   groupe: string | null;
+  email: string | null;
   qrDataUrl: string;
 }
+
+type ResultatEnvoi = { envoyes: number; sansEmail: number; erreurs: string[] };
 
 export function FeuilleBadges({ badges }: { badges: Badge[] }) {
   const [selection, setSelection] = useState<Set<string>>(
     () => new Set(badges.map((b) => b.id)),
   );
+  const [envoiEnCours, setEnvoiEnCours] = useState(false);
+  const [resultatEnvoi, setResultatEnvoi] = useState<ResultatEnvoi | null>(null);
 
   const badgesSelectionnes = useMemo(
     () => badges.filter((b) => selection.has(b.id)),
@@ -38,6 +44,28 @@ export function FeuilleBadges({ badges }: { badges: Badge[] }) {
     setSelection(new Set());
   }
 
+  async function envoyerParEmail() {
+    setEnvoiEnCours(true);
+    setResultatEnvoi(null);
+    try {
+      const res = await fetch("/api/apprentis/envoyer-badges", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids: Array.from(selection) }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setResultatEnvoi({ envoyes: 0, sansEmail: 0, erreurs: [data.erreur ?? "Échec de l'envoi."] });
+        return;
+      }
+      setResultatEnvoi(data);
+    } catch {
+      setResultatEnvoi({ envoyes: 0, sansEmail: 0, erreurs: ["Échec de l'envoi."] });
+    } finally {
+      setEnvoiEnCours(false);
+    }
+  }
+
   return (
     <div>
       <div className="no-print carte-cahier mb-6 p-4">
@@ -59,6 +87,14 @@ export function FeuilleBadges({ badges }: { badges: Badge[] }) {
               Tout désélectionner
             </button>
             <button
+              onClick={envoyerParEmail}
+              disabled={envoiEnCours || badgesSelectionnes.length === 0}
+              className="flex items-center gap-1.5 rounded-xl border border-bordure px-3.5 py-1.5 text-sm font-medium text-encre-claire transition hover:border-accent hover:text-accent disabled:opacity-50"
+            >
+              <Mail size={16} />
+              {envoiEnCours ? "Envoi…" : "Envoyer par e-mail"}
+            </button>
+            <button
               onClick={() => window.print()}
               disabled={badgesSelectionnes.length === 0}
               className="rounded-xl bg-accent px-4 py-1.5 text-sm font-semibold text-white transition hover:bg-accent-clair disabled:opacity-50"
@@ -67,6 +103,26 @@ export function FeuilleBadges({ badges }: { badges: Badge[] }) {
             </button>
           </div>
         </div>
+        {resultatEnvoi && (
+          <div className="mb-3 rounded-lg border border-bordure p-3 text-sm">
+            <p className="text-encre">
+              <span className="font-medium text-present">{resultatEnvoi.envoyes} badge(s) envoyé(s)</span>
+              {resultatEnvoi.sansEmail > 0 && (
+                <span className="text-encre-claire">
+                  {" "}
+                  · {resultatEnvoi.sansEmail} sans adresse e-mail (ignoré(s))
+                </span>
+              )}
+            </p>
+            {resultatEnvoi.erreurs.length > 0 && (
+              <ul className="mt-2 list-disc pl-5 text-absent">
+                {resultatEnvoi.erreurs.map((e, i) => (
+                  <li key={i}>{e}</li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
           {badges.map((b) => (
             <label
@@ -82,6 +138,7 @@ export function FeuilleBadges({ badges }: { badges: Badge[] }) {
               <span className="truncate">
                 {b.prenom} {b.nom}
               </span>
+              {b.email && <Mail size={12} className="ml-auto shrink-0 text-encre-claire" />}
             </label>
           ))}
         </div>

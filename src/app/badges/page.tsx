@@ -18,6 +18,7 @@ export default async function PageBadges() {
       prenom: a.prenom,
       identifiant: a.identifiant,
       groupe: a.groupe,
+      email: a.email,
       qrDataUrl: await genererQrDataUrl(a.identifiant),
     })),
   );
