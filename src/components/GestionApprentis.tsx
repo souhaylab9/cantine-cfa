@@ -2,13 +2,13 @@
 
 import { useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { IdCard, Upload } from "lucide-react";
+import { IdCard, Upload, Mail } from "lucide-react";
 import type { Apprenti } from "@/generated/prisma/client";
 
 type Brouillon = { nom: string; prenom: string; groupe: string; email: string };
 const BROUILLON_VIDE: Brouillon = { nom: "", prenom: "", groupe: "", email: "" };
 
-type ResultatImport = { importes: number; ignores: number; erreurs: string[] };
+type ResultatImport = { importes: number; ignores: number; emailsEnvoyes: number; erreurs: string[] };
 
 export function GestionApprentis({
   apprentisInitiaux,
@@ -24,6 +24,8 @@ export function GestionApprentis({
   const [erreur, setErreur] = useState<string | null>(null);
   const [importEnCours, setImportEnCours] = useState(false);
   const [resultatImport, setResultatImport] = useState<ResultatImport | null>(null);
+  const [messageEnvoi, setMessageEnvoi] = useState<{ texte: string; erreur: boolean } | null>(null);
+  const [envoiIdEnCours, setEnvoiIdEnCours] = useState<string | null>(null);
   const inputFichierRef = useRef<HTMLInputElement>(null);
 
   const apprentisFiltres = useMemo(() => {
@@ -62,6 +64,7 @@ export function GestionApprentis({
     }
     setEnCours(true);
     setErreur(null);
+    setMessageEnvoi(null);
 
     try {
       if (apprentiEnEdition) {
@@ -86,6 +89,16 @@ export function GestionApprentis({
         setApprentis((prev) =>
           [...prev, cree].sort((a, b) => a.nom.localeCompare(b.nom)),
         );
+        if (cree.email) {
+          setMessageEnvoi(
+            cree.emailEnvoye
+              ? { texte: `Badge envoyé par e-mail à ${cree.prenom} ${cree.nom}.`, erreur: false }
+              : {
+                  texte: `${cree.prenom} ${cree.nom} enregistré(e), mais le badge n'a pas pu être envoyé par e-mail (${cree.erreurEmail ?? "erreur"}).`,
+                  erreur: true,
+                },
+          );
+        }
       }
       fermerFormulaire();
     } catch {
@@ -130,7 +143,12 @@ export function GestionApprentis({
       const data = await res.json();
 
       if (!res.ok) {
-        setResultatImport({ importes: 0, ignores: 0, erreurs: [data.erreur ?? "Échec de l'import."] });
+        setResultatImport({
+          importes: 0,
+          ignores: 0,
+          emailsEnvoyes: 0,
+          erreurs: [data.erreur ?? "Échec de l'import."],
+        });
         return;
       }
 
@@ -140,9 +158,34 @@ export function GestionApprentis({
         setApprentis(await listeRes.json());
       }
     } catch {
-      setResultatImport({ importes: 0, ignores: 0, erreurs: ["Échec de l'import."] });
+      setResultatImport({ importes: 0, ignores: 0, emailsEnvoyes: 0, erreurs: ["Échec de l'import."] });
     } finally {
       setImportEnCours(false);
+    }
+  }
+
+  async function envoyerBadge(a: Apprenti) {
+    setEnvoiIdEnCours(a.id);
+    setMessageEnvoi(null);
+    try {
+      const res = await fetch("/api/apprentis/envoyer-badges", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids: [a.id] }),
+      });
+      const data = await res.json();
+      if (res.ok && data.envoyes > 0) {
+        setMessageEnvoi({ texte: `Badge envoyé par e-mail à ${a.prenom} ${a.nom}.`, erreur: false });
+      } else {
+        setMessageEnvoi({
+          texte: `Échec de l'envoi à ${a.prenom} ${a.nom} (${data.erreurs?.[0] ?? data.erreur ?? "erreur"}).`,
+          erreur: true,
+        });
+      }
+    } catch {
+      setMessageEnvoi({ texte: `Échec de l'envoi à ${a.prenom} ${a.nom}.`, erreur: true });
+    } finally {
+      setEnvoiIdEnCours(null);
     }
   }
 
@@ -202,10 +245,19 @@ export function GestionApprentis({
         </div>
       </div>
 
+      {messageEnvoi && (
+        <div className="carte-cahier mb-4 p-3 text-sm">
+          <p className={messageEnvoi.erreur ? "text-absent" : "text-present"}>{messageEnvoi.texte}</p>
+        </div>
+      )}
+
       {resultatImport && (
         <div className="carte-cahier mb-4 p-4 text-sm">
           <p className="text-encre">
             <span className="font-medium text-present">{resultatImport.importes} importé(s)</span>
+            {resultatImport.emailsEnvoyes > 0 && (
+              <span className="text-encre-claire"> · {resultatImport.emailsEnvoyes} badge(s) envoyé(s) par e-mail</span>
+            )}
             {resultatImport.ignores > 0 && (
               <span className="text-encre-claire"> · {resultatImport.ignores} déjà existant(s) ignoré(s)</span>
             )}
@@ -262,6 +314,19 @@ export function GestionApprentis({
                   </button>
                 </td>
                 <td className="px-4 py-2.5 text-right whitespace-nowrap">
+                  {a.email && (
+                    <>
+                      <button
+                        onClick={() => envoyerBadge(a)}
+                        disabled={envoiIdEnCours === a.id}
+                        className="inline-flex items-center gap-1 text-xs font-medium text-encre-claire hover:text-accent hover:underline disabled:opacity-60"
+                      >
+                        <Mail size={12} />
+                        {envoiIdEnCours === a.id ? "Envoi…" : "Envoyer le badge"}
+                      </button>
+                      <span className="mx-2 text-bordure">|</span>
+                    </>
+                  )}
                   <button
                     onClick={() => ouvrirEdition(a)}
                     className="text-xs font-medium text-accent hover:underline"

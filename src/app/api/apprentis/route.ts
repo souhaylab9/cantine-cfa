@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { genererIdentifiant } from "@/lib/identifiant";
+import { envoyerBadgeParEmail } from "@/lib/email";
 
 export async function GET() {
   const apprentis = await prisma.apprenti.findMany({
@@ -30,5 +31,16 @@ export async function POST(request: NextRequest) {
     data: { nom, prenom, groupe, email, identifiant },
   });
 
-  return NextResponse.json(apprenti, { status: 201 });
+  let emailEnvoye = false;
+  let erreurEmail: string | null = null;
+  if (email) {
+    try {
+      await envoyerBadgeParEmail({ nom, prenom, identifiant, email });
+      emailEnvoye = true;
+    } catch (e) {
+      erreurEmail = e instanceof Error ? e.message : "Échec de l'envoi du badge.";
+    }
+  }
+
+  return NextResponse.json({ ...apprenti, emailEnvoye, erreurEmail }, { status: 201 });
 }

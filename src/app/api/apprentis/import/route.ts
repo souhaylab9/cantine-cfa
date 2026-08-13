@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import ExcelJS from "exceljs";
 import { prisma } from "@/lib/db";
 import { genererIdentifiant } from "@/lib/identifiant";
+import { envoyerBadgeParEmail } from "@/lib/email";
 
 function normaliser(texte: string): string {
   return texte
@@ -67,6 +68,7 @@ export async function POST(request: NextRequest) {
 
   let importes = 0;
   let ignores = 0;
+  let emailsEnvoyes = 0;
   const erreurs: string[] = [];
 
   for (let i = premiereLigneDonnees; i <= feuille.rowCount; i++) {
@@ -93,19 +95,31 @@ export async function POST(request: NextRequest) {
       continue;
     }
 
+    const emailValide = brutEmail && REGEX_EMAIL.test(brutEmail) ? brutEmail : null;
     const identifiant = await genererIdentifiant();
     await prisma.apprenti.create({
       data: {
         nom: brutNom,
         prenom: brutPrenom,
         groupe: brutGroupe || null,
-        email: brutEmail && REGEX_EMAIL.test(brutEmail) ? brutEmail : null,
+        email: emailValide,
         identifiant,
       },
     });
     clesExistantes.add(cle);
     importes++;
+
+    if (emailValide) {
+      try {
+        await envoyerBadgeParEmail({ nom: brutNom, prenom: brutPrenom, identifiant, email: emailValide });
+        emailsEnvoyes++;
+      } catch (e) {
+        erreurs.push(
+          `${brutPrenom} ${brutNom} : badge non envoyé par e-mail (${e instanceof Error ? e.message : "échec"}).`,
+        );
+      }
+    }
   }
 
-  return NextResponse.json({ importes, ignores, erreurs });
+  return NextResponse.json({ importes, ignores, emailsEnvoyes, erreurs });
 }
