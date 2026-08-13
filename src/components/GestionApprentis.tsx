@@ -1,12 +1,14 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { IdCard } from "lucide-react";
+import { IdCard, Upload } from "lucide-react";
 import type { Apprenti } from "@/generated/prisma/client";
 
 type Brouillon = { nom: string; prenom: string; groupe: string };
 const BROUILLON_VIDE: Brouillon = { nom: "", prenom: "", groupe: "" };
+
+type ResultatImport = { importes: number; ignores: number; erreurs: string[] };
 
 export function GestionApprentis({
   apprentisInitiaux,
@@ -20,6 +22,9 @@ export function GestionApprentis({
   const [brouillon, setBrouillon] = useState<Brouillon>(BROUILLON_VIDE);
   const [enCours, setEnCours] = useState(false);
   const [erreur, setErreur] = useState<string | null>(null);
+  const [importEnCours, setImportEnCours] = useState(false);
+  const [resultatImport, setResultatImport] = useState<ResultatImport | null>(null);
+  const inputFichierRef = useRef<HTMLInputElement>(null);
 
   const apprentisFiltres = useMemo(() => {
     const q = recherche.trim().toLowerCase();
@@ -102,6 +107,45 @@ export function GestionApprentis({
     }
   }
 
+  function declencherImport() {
+    setResultatImport(null);
+    inputFichierRef.current?.click();
+  }
+
+  async function handleFichierChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const fichier = e.target.files?.[0];
+    e.target.value = "";
+    if (!fichier) return;
+
+    setImportEnCours(true);
+    setResultatImport(null);
+
+    try {
+      const formData = new FormData();
+      formData.append("fichier", fichier);
+      const res = await fetch("/api/apprentis/import", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setResultatImport({ importes: 0, ignores: 0, erreurs: [data.erreur ?? "Échec de l'import."] });
+        return;
+      }
+
+      setResultatImport(data);
+      const listeRes = await fetch("/api/apprentis");
+      if (listeRes.ok) {
+        setApprentis(await listeRes.json());
+      }
+    } catch {
+      setResultatImport({ importes: 0, ignores: 0, erreurs: ["Échec de l'import."] });
+    } finally {
+      setImportEnCours(false);
+    }
+  }
+
   async function supprimer(a: Apprenti) {
     if (
       !confirm(
@@ -134,6 +178,21 @@ export function GestionApprentis({
             <IdCard size={16} />
             Voir les badges
           </Link>
+          <input
+            ref={inputFichierRef}
+            type="file"
+            accept=".xlsx,.xls"
+            className="hidden"
+            onChange={handleFichierChange}
+          />
+          <button
+            onClick={declencherImport}
+            disabled={importEnCours}
+            className="flex items-center gap-1.5 rounded-xl border border-bordure bg-carte px-3.5 py-2 text-sm font-medium text-encre-claire transition hover:border-accent hover:text-accent disabled:opacity-60"
+          >
+            <Upload size={16} />
+            {importEnCours ? "Import…" : "Importer un Excel"}
+          </button>
           <button
             onClick={ouvrirAjout}
             className="rounded-xl bg-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-accent-clair"
@@ -142,6 +201,29 @@ export function GestionApprentis({
           </button>
         </div>
       </div>
+
+      {resultatImport && (
+        <div className="carte-cahier mb-4 p-4 text-sm">
+          <p className="text-encre">
+            <span className="font-medium text-present">{resultatImport.importes} importé(s)</span>
+            {resultatImport.ignores > 0 && (
+              <span className="text-encre-claire"> · {resultatImport.ignores} déjà existant(s) ignoré(s)</span>
+            )}
+          </p>
+          {resultatImport.erreurs.length > 0 && (
+            <ul className="mt-2 list-disc pl-5 text-absent">
+              {resultatImport.erreurs.map((e, i) => (
+                <li key={i}>{e}</li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
+
+      <p className="mb-3 text-xs text-encre-claire">
+        Le fichier Excel doit avoir des colonnes Nom, Prénom et (optionnel) Groupe/Classe — avec ou
+        sans ligne d&rsquo;en-tête.
+      </p>
 
       <div className="carte-cahier overflow-x-auto">
         <table className="w-full text-left text-sm">
