@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import { lookup } from "dns/promises";
 import { genererQrDataUrl } from "./qrcode";
 
 export interface DestinataireBadge {
@@ -8,7 +9,9 @@ export interface DestinataireBadge {
   email: string;
 }
 
-function creerTransporteur() {
+const HOTE_GMAIL = "smtp.gmail.com";
+
+async function creerTransporteur() {
   const utilisateur = process.env.GMAIL_USER;
   const motDePasse = process.env.GMAIL_APP_PASSWORD;
 
@@ -18,14 +21,24 @@ function creerTransporteur() {
     );
   }
 
+  // Certains hébergeurs (dont Railway) ne routent pas l'IPv6 sortant : on résout
+  // explicitement une adresse IPv4 pour éviter un ENETUNREACH sur l'adresse IPv6 de Gmail.
+  const { address } = await lookup(HOTE_GMAIL, { family: 4 });
+
   return nodemailer.createTransport({
-    service: "gmail",
+    host: address,
+    port: 465,
+    secure: true,
+    tls: { servername: HOTE_GMAIL },
     auth: { user: utilisateur, pass: motDePasse },
+    connectionTimeout: 10_000,
+    greetingTimeout: 10_000,
+    socketTimeout: 10_000,
   });
 }
 
 export async function envoyerBadgeParEmail(destinataire: DestinataireBadge): Promise<void> {
-  const transporteur = creerTransporteur();
+  const transporteur = await creerTransporteur();
   const qrDataUrl = await genererQrDataUrl(destinataire.identifiant);
   const qrBuffer = Buffer.from(qrDataUrl.split(",")[1], "base64");
 
