@@ -159,7 +159,7 @@ export function AppelDuJour({
           onChange={(e) => setSaisie(e.target.value)}
           onBlur={() => setTimeout(refocaliser, 50)}
           placeholder="En attente d'un scan…"
-          className="font-code w-full rounded-xl border border-bordure bg-papier px-4 py-3 text-lg tracking-wide text-encre outline-none transition focus:border-accent focus:shadow-[0_0_0_3px_rgba(92,138,95,0.18)]"
+          className="font-code w-full rounded-xl border border-bordure bg-papier px-4 py-3 text-lg tracking-wide text-encre outline-none transition focus:border-accent focus:shadow-[0_0_0_3px_rgba(122,42,53,0.18)]"
         />
         {erreurScan && (
           <p className="mt-2 text-sm font-medium text-absent">{erreurScan}</p>
@@ -175,7 +175,7 @@ export function AppelDuJour({
           placeholder="Filtrer…"
           value={recherche}
           onChange={(e) => setRecherche(e.target.value)}
-          className="w-full max-w-[180px] rounded-lg border border-bordure bg-carte px-3 py-1.5 text-sm outline-none focus:border-accent focus:shadow-[0_0_0_3px_rgba(92,138,95,0.18)]"
+          className="w-full max-w-[180px] rounded-lg border border-bordure bg-carte px-3 py-1.5 text-sm outline-none focus:border-accent focus:shadow-[0_0_0_3px_rgba(122,42,53,0.18)]"
         />
       </div>
 

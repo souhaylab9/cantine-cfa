@@ -11,13 +11,14 @@ const LIENS = [
 export function BarreLaterale({ section }: { section: string }) {
   return (
     <aside className="no-print fixed inset-y-0 left-0 z-40 flex w-16 flex-col border-r border-bordure bg-carte py-5 md:w-60">
-      <div className="mb-6 flex items-center justify-center px-2 md:justify-start md:px-4">
+      <div className="mb-6 flex flex-col items-center px-2 md:items-start md:px-4">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/logo-vsm.png"
           alt="VSM Académie"
           className="h-10 w-auto object-contain md:h-20"
         />
+        <span className="mt-2 h-px w-10 bg-or md:w-16" />
       </div>
       <nav className="flex flex-1 flex-col gap-1 px-2.5">
         {LIENS.map((lien) => {

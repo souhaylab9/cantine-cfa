@@ -4,8 +4,9 @@
   --papier: #f7f6ef;
   --encre: #26302a;
   --encre-claire: #74806f;
-  --accent: #5c8a5f;
-  --accent-fonce: #446b47;
+  --accent: #7a2a35;
+  --accent-fonce: #5c1f28;
+  --or: #c9a366;
   --present: #4e8452;
   --present-clair: #e7f1e4;
   --absent: #c97a4a;
@@ -24,6 +25,7 @@
   --color-encre-claire: var(--encre-claire);
   --color-accent: var(--accent);
   --color-accent-clair: var(--accent-fonce);
+  --color-or: var(--or);
   --color-present: var(--present);
   --color-present-clair: var(--present-clair);
   --color-absent: var(--absent);
@@ -41,8 +43,11 @@ body {
   background-color: var(--papier);
   color: var(--encre);
   font-family: var(--font-texte), system-ui, sans-serif;
-  background-image: radial-gradient(rgba(92, 138, 95, 0.09) 1px, transparent 1px);
-  background-size: 22px 22px;
+  background-image:
+    radial-gradient(ellipse 900px 500px at 100% -10%, rgba(122, 42, 53, 0.06), transparent 60%),
+    radial-gradient(ellipse 700px 450px at -10% 100%, rgba(201, 163, 102, 0.08), transparent 55%);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
 }
 
 h1,

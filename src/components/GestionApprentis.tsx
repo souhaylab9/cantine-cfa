@@ -124,7 +124,7 @@ export function GestionApprentis({
           placeholder="Rechercher un apprenti…"
           value={recherche}
           onChange={(e) => setRecherche(e.target.value)}
-          className="w-full max-w-xs rounded-xl border border-bordure bg-carte px-3.5 py-2 text-sm outline-none focus:border-accent focus:shadow-[0_0_0_3px_rgba(92,138,95,0.18)]"
+          className="w-full max-w-xs rounded-xl border border-bordure bg-carte px-3.5 py-2 text-sm outline-none focus:border-accent focus:shadow-[0_0_0_3px_rgba(122,42,53,0.18)]"
         />
         <div className="flex items-center gap-2">
           <Link
@@ -221,7 +221,7 @@ export function GestionApprentis({
                   onChange={(e) =>
                     setBrouillon((b) => ({ ...b, nom: e.target.value }))
                   }
-                  className="w-full rounded-xl border border-bordure bg-papier px-3 py-2 outline-none focus:border-accent focus:shadow-[0_0_0_3px_rgba(92,138,95,0.18)]"
+                  className="w-full rounded-xl border border-bordure bg-papier px-3 py-2 outline-none focus:border-accent focus:shadow-[0_0_0_3px_rgba(122,42,53,0.18)]"
                 />
               </div>
               <div>
@@ -233,7 +233,7 @@ export function GestionApprentis({
                   onChange={(e) =>
                     setBrouillon((b) => ({ ...b, prenom: e.target.value }))
                   }
-                  className="w-full rounded-xl border border-bordure bg-papier px-3 py-2 outline-none focus:border-accent focus:shadow-[0_0_0_3px_rgba(92,138,95,0.18)]"
+                  className="w-full rounded-xl border border-bordure bg-papier px-3 py-2 outline-none focus:border-accent focus:shadow-[0_0_0_3px_rgba(122,42,53,0.18)]"
                 />
               </div>
               <div>
@@ -245,7 +245,7 @@ export function GestionApprentis({
                   onChange={(e) =>
                     setBrouillon((b) => ({ ...b, groupe: e.target.value }))
                   }
-                  className="w-full rounded-xl border border-bordure bg-papier px-3 py-2 outline-none focus:border-accent focus:shadow-[0_0_0_3px_rgba(92,138,95,0.18)]"
+                  className="w-full rounded-xl border border-bordure bg-papier px-3 py-2 outline-none focus:border-accent focus:shadow-[0_0_0_3px_rgba(122,42,53,0.18)]"
                 />
               </div>
               {apprentiEnEdition && (
