@@ -17,6 +17,9 @@ const plexMono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   title: "Cantine CFA — Registre d'appel",
   description: "Gestion des présences et absences des apprentis à la cantine",
+  icons: {
+    icon: "/logo-vsm.png",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

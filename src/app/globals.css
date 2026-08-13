@@ -41,6 +41,8 @@ body {
   background-color: var(--papier);
   color: var(--encre);
   font-family: var(--font-texte), system-ui, sans-serif;
+  background-image: radial-gradient(rgba(92, 138, 95, 0.09) 1px, transparent 1px);
+  background-size: 22px 22px;
 }
 
 h1,
