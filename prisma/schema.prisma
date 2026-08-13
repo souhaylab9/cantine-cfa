@@ -49,6 +49,8 @@ model Presence {
 
 model Admin {
   id             String   @id @default(cuid())
+  nom            String?
+  email          String?
   motDePasseHash String
   createdAt      DateTime @default(now())
 }

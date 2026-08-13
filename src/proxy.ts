@@ -2,8 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { getIronSession } from "iron-session";
 import { sessionOptions, type SessionData } from "@/lib/session";
 
-const CHEMINS_PROTEGES = ["/apprentis", "/badges", "/historique", "/facturation"];
-const API_PROTEGES = ["/api/apprentis", "/api/export", "/api/historique", "/api/facturation"];
+const CHEMINS_PROTEGES = ["/apprentis", "/badges", "/historique", "/facturation", "/compte"];
+const API_PROTEGES = [
+  "/api/apprentis",
+  "/api/export",
+  "/api/historique",
+  "/api/facturation",
+  "/api/auth/changer-mot-de-passe",
+  "/api/auth/profil",
+];
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -42,6 +49,7 @@ export const config = {
     "/badges/:path*",
     "/historique/:path*",
     "/facturation/:path*",
+    "/compte/:path*",
     "/api/:path*",
   ],
 };

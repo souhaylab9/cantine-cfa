@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
+import { UserCircle } from "lucide-react";
 import { BoutonDeconnexion } from "./BoutonDeconnexion";
 
 function capitaliser(texte: string): string {
@@ -27,7 +28,16 @@ export function BarreSuperieure({
         <p className="text-xs text-encre-claire sm:text-sm">{dateAffichee}</p>
       </div>
       {authentifie ? (
-        <BoutonDeconnexion />
+        <div className="flex items-center gap-4">
+          <Link
+            href="/compte"
+            className="flex items-center gap-1.5 text-sm font-medium text-encre-claire hover:text-accent"
+          >
+            <UserCircle size={18} />
+            <span className="hidden sm:inline">Mon compte</span>
+          </Link>
+          <BoutonDeconnexion />
+        </div>
       ) : (
         <Link
           href="/login"
