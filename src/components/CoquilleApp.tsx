@@ -14,6 +14,10 @@ export function CoquilleApp({
 }) {
   return (
     <div className="min-h-screen">
+      <div
+        className="no-print fixed inset-x-0 top-0 z-50 h-1"
+        style={{ background: "linear-gradient(to right, var(--accent), var(--or))" }}
+      />
       <BarreLaterale section={section} />
       <div className="ml-16 flex min-h-screen flex-col md:ml-60">
         <BarreSuperieure titre={titre} authentifie={authentifie} />

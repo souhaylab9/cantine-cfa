@@ -34,18 +34,12 @@ function FormulaireConnexion() {
 
   return (
     <div className="carte-cahier w-full max-w-sm p-8">
-      <div className="mb-6 flex items-center gap-2.5">
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-accent font-titre text-sm font-bold text-white">
-          C
-        </span>
-        <div>
-          <p className="font-code text-[11px] uppercase tracking-widest text-encre-claire">
-            Cantine CFA
-          </p>
-          <h1 className="font-titre text-lg font-semibold text-encre">
-            Accès administration
-          </h1>
-        </div>
+      <div className="mb-6 flex flex-col items-start gap-2.5">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/logo-vsm.png" alt="VSM Académie" className="h-14 w-auto object-contain" />
+        <h1 className="font-titre text-lg font-semibold text-encre">
+          Accès administration
+        </h1>
       </div>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
@@ -86,6 +80,10 @@ function FormulaireConnexion() {
 export default function PageConnexion() {
   return (
     <main className="flex min-h-screen items-center justify-center px-4">
+      <div
+        className="fixed inset-x-0 top-0 z-50 h-1"
+        style={{ background: "linear-gradient(to right, var(--accent), var(--or))" }}
+      />
       <Suspense fallback={null}>
         <FormulaireConnexion />
       </Suspense>
